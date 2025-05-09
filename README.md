@@ -12,8 +12,9 @@ Este projeto foi criado como trabalho prático da disciplina Programação Orien
 - Pygame
 - Git & GitHub
 
-## 🚀 Colaboradores
+## 👥 Colaboradores
 
-@cristeer
-@luizzfbraga
+- [@cristeer](https://github.com/cristeer)
+- [@luizzfbraga](https://github.com/luizzfbraga)
+
 

@@ -3,12 +3,13 @@ from laser import Laser
 
 class Spaceship(pygame.sprite.Sprite):
 
-    def __init__(self, width:int, height:int):
+    def __init__(self, width:int, height:int, offset:int) -> None:
         super().__init__()
 
         # Globais
         self.width = width
         self.height = height
+        self.offset = offset
         self.speed = 6
 
         # Exibir
@@ -44,8 +45,8 @@ class Spaceship(pygame.sprite.Sprite):
         if self.rect.right > self.width:
             self.rect.right = self.width
 
-        elif self.rect.left < 0:
-            self.rect.left = 0
+        elif self.rect.left < self.offset:
+            self.rect.left = self.offset
 
     def recharge_laser(self):
         if not self.laser_ready:
@@ -60,3 +61,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.get_user_input()
         self.constrains()
         self.recharge_laser()
+
+    def reset(self):
+        self.rect = self.image.get_rect(midbottom = (self.width/2, self.height))
+        self.laser_group.empty()

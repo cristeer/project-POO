@@ -22,10 +22,14 @@ class Game:
         self.spaceship_group = pygame.sprite.GroupSingle()
         self.spaceship_group.add(Spaceship(self.screen_width, self.screen_height, self.offset))
 
+        self.transformation_active = False
+        self.transformation_time = 0
+
         self.mystery_ship_group = pygame.sprite.GroupSingle()
         self.mystery_ship_lasers_group = pygame.sprite.Group() #teste
         self.mystery_counter = 0
         self.mystery_health = 3
+        self.mystery_kill = False
         
         self.aliens_group = pygame.sprite.Group()
         self.aliens_lasers_group = pygame.sprite.Group()
@@ -107,7 +111,10 @@ class Game:
                     laser_sprite.kill()
                     if self.mystery_health == 0:
                         self.mystery_counter = 0
+                        self.mystery_kill = True
                         self.mystery_ship_group.sprite.kill()
+                        self.transformation_active = True
+                        self.transformation_time = pygame.time.get_ticks()
             
                 for obstacle in self.obstacles:
                     if pygame.sprite.spritecollide(laser_sprite, obstacle.blocks_group, True):
@@ -150,9 +157,20 @@ class Game:
         self.game_state = False
         self.level = 1
         self.player_lives = 3
+        cur_pos = self.spaceship_group.sprite.rect.midbottom
+        self.spaceship_group.empty()
+        self.spaceship_group.add(Spaceship(self.screen_width, self.screen_height, self.offset, cur_pos))
+        self.transformation_active = False
+        self.transform_time = 0
 
     def reset_game(self):
         self.spaceship_group.sprite.reset()
+        self.transformation_active = False
+        self.transformation_time = 0
+        cur_pos = self.spaceship_group.sprite.rect.midbottom
+        self.spaceship_group.empty()
+        self.spaceship_group.add(Spaceship(self.screen_width, self.screen_height, self.offset, cur_pos))
+
         self.aliens_group.empty()
         self.aliens_lasers_group.empty()
 

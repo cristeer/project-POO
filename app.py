@@ -2,6 +2,7 @@ import pygame, sys
 from random import randint
 
 from spaceship import Spaceship
+from super_spaceship import SuperSpaceship
 from game import Game
 
 pygame.init()
@@ -73,6 +74,26 @@ while True:
             game.level += 1
             game.reset_game()
 
+    if game.transformation_active and game.mystery_kill:
+        cur_pos = game.spaceship_group.sprite.rect.midbottom
+        game.spaceship_group.empty()
+        super_spaceship = SuperSpaceship(SCREEN_WIDTH, SCREEN_HEIGHT, OFFSET, position = cur_pos)
+        game.spaceship_group.add(super_spaceship)
+        super_spaceship.laser_ready = True
+        super_spaceship.laser_time = pygame.time.get_ticks()
+        game.mystery_kill = False
+
+    if game.transformation_active:
+        now = pygame.time.get_ticks()
+        if now - game.transformation_time >= 10000:
+            cur_pos = game.spaceship_group.sprite.rect.midbottom
+            game.spaceship_group.empty()
+            normal_spaceship = Spaceship(SCREEN_WIDTH, SCREEN_HEIGHT, OFFSET, cur_pos)
+            normal_spaceship.laser_ready = True
+            normal_spaceship.laser_time = pygame.time.get_ticks()
+            game.spaceship_group.add(normal_spaceship)
+            game.transformation_active = False
+        
     # Exibir Interface de Usuário
     
     screen.fill(GREY)

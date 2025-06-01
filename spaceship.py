@@ -3,7 +3,7 @@ from laser import Laser
 
 class Spaceship(pygame.sprite.Sprite):
 
-    def __init__(self, width:int, height:int, offset:int) -> None:
+    def __init__(self, width:int, height:int, offset:int, position = None) -> None:
         super().__init__()
 
         # Globais
@@ -14,7 +14,10 @@ class Spaceship(pygame.sprite.Sprite):
 
         # Exibir
         self.image = pygame.image.load('images/spaceship/spaceship.png')
-        self.rect = self.image.get_rect(midbottom = (self.width/2, self.height))
+        if position:
+            self.rect = self.image.get_rect(midbottom = position)
+        else:
+            self.rect = self.image.get_rect(midbottom = (self.width/2, self.height))
         
         #Laser
         self.laser_ready = True

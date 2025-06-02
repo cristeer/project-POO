@@ -1,11 +1,12 @@
 import pygame
-from random import choice
+from random import choice, randint
 
 from spaceship import Spaceship
 from obstacle import Obstacle
 from grid import Grid
 from alien import Alien
 from laser import Laser
+from mystery_laser import MysteryLaser
 from mystery_ship import MysteryShip
 
 
@@ -16,11 +17,19 @@ class Game:
         self.offset = offset
         self.player_lives = 3
         self.game_state = False
+        self.level = 1
 
         self.spaceship_group = pygame.sprite.GroupSingle()
         self.spaceship_group.add(Spaceship(self.screen_width, self.screen_height, self.offset))
 
+        self.transformation_active = False
+        self.transformation_time = 0
+
         self.mystery_ship_group = pygame.sprite.GroupSingle()
+        self.mystery_ship_lasers_group = pygame.sprite.Group() #teste
+        self.mystery_counter = 0
+        self.mystery_health = 3
+        self.mystery_kill = False
         
         self.aliens_group = pygame.sprite.Group()
         self.aliens_lasers_group = pygame.sprite.Group()
@@ -83,6 +92,13 @@ class Game:
 
     def create_mystery_ship(self) -> None:
         self.mystery_ship_group.add(MysteryShip(self.screen_width, self.offset))
+        self.mystery_counter += 1
+
+    def mystery_shoot(self) -> None:
+        if self.mystery_ship_group:
+            position = self.mystery_ship_group.sprite.rect.center
+            self.mystery_laser = MysteryLaser(position, -10, self.screen_height)
+            self.mystery_ship_lasers_group.add(self.mystery_laser)
 
     def check_for_collisions(self) -> None:
         # Colisões da Nave: 
@@ -90,8 +106,15 @@ class Game:
             for laser_sprite in self.spaceship_group.sprite.laser_group:
                 if pygame.sprite.spritecollide(laser_sprite, self.aliens_group, True):
                     laser_sprite.kill()
-                elif pygame.sprite.spritecollide(laser_sprite, self.mystery_ship_group, True):
+                elif pygame.sprite.spritecollide(laser_sprite, self.mystery_ship_group, False):
+                    self.mystery_health -= 1
                     laser_sprite.kill()
+                    if self.mystery_health == 0:
+                        self.mystery_counter = 0
+                        self.mystery_kill = True
+                        self.mystery_ship_group.sprite.kill()
+                        self.transformation_active = True
+                        self.transformation_time = pygame.time.get_ticks()
             
                 for obstacle in self.obstacles:
                     if pygame.sprite.spritecollide(laser_sprite, obstacle.blocks_group, True):
@@ -117,16 +140,47 @@ class Game:
                 if pygame.sprite.spritecollide(alien, self.spaceship_group, False):
                     self.game_over()
 
+        if self.mystery_ship_group:
+            for laser_sprite in self.mystery_ship_lasers_group:
+                
+                if pygame.sprite.spritecollide(laser_sprite, self.spaceship_group, False):
+                    laser_sprite.kill()
+                    self.player_lives -= 1
+                if self.player_lives == 0: 
+                    self.game_over()
+
+                for obstacle in self.obstacles:
+                    if pygame.sprite.spritecollide(laser_sprite, obstacle.blocks_group, True):
+                        laser_sprite.kill()
+                    
     def game_over(self):
         self.game_state = False
+        self.level = 1
+        self.player_lives = 3
+        cur_pos = self.spaceship_group.sprite.rect.midbottom
+        self.spaceship_group.empty()
+        self.spaceship_group.add(Spaceship(self.screen_width, self.screen_height, self.offset, cur_pos))
+        self.transformation_active = False
+        self.transform_time = 0
 
     def reset_game(self):
         self.spaceship_group.sprite.reset()
+        self.transformation_active = False
+        self.transformation_time = 0
+        cur_pos = self.spaceship_group.sprite.rect.midbottom
+        self.spaceship_group.empty()
+        self.spaceship_group.add(Spaceship(self.screen_width, self.screen_height, self.offset, cur_pos))
+
         self.aliens_group.empty()
         self.aliens_lasers_group.empty()
+
         self.mystery_ship_group.empty()
+        self.mystery_health = 3
+        self.mystery_counter = 0
 
         self.create_aliens()
         self.obstacles = self.create_obstacles()
 
         self.game_state = True
+
+        pygame.time.set_timer(pygame.USEREVENT + 2, randint(10000, 15000))

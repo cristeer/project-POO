@@ -39,6 +39,7 @@ spaceship_group.add(spaceship)
 # UI
 
 game_over_surface = font.render('GAME OVER', False,YELLOW)
+score_text_surface = font.render('SCORE', False, YELLOW)
 
 #Game Loop
 while True:
@@ -106,6 +107,11 @@ while True:
             screen.blit(game.spaceship_group.sprite.image, (x, 745))
             x += 50
             
+        screen.blit(score_text_surface, (50, 15, 50, 50))
+        formatted_score = str(game.score).zfill(6)
+        score_surface = font.render(formatted_score, False, YELLOW)
+        screen.blit(score_surface, (50, 40, 50, 50))
+
     else:
         screen.blit(game_over_surface, (570, 740, 50, 50))
 

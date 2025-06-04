@@ -17,7 +17,7 @@ class MysteryShip(pygame.sprite.Sprite):
         else:
             self.speed = -3
         
-        self.rect = self.image.get_rect(topleft = (self.x, 40))
+        self.rect = self.image.get_rect(topleft = (self.x, 75))
 
     def update(self) -> None: # Atualiza as movimentações da nave especial
         self.rect.x += self.speed

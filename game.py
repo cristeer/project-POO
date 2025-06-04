@@ -18,6 +18,7 @@ class Game:
         self.player_lives = 3
         self.game_state = False
         self.level = 1
+        self.score = 0
 
         self.spaceship_group = pygame.sprite.GroupSingle()
         self.spaceship_group.add(Spaceship(self.screen_width, self.screen_height, self.offset))
@@ -104,12 +105,18 @@ class Game:
         # Colisões da Nave: 
         if self.spaceship_group.sprite.laser_group:
             for laser_sprite in self.spaceship_group.sprite.laser_group:
-                if pygame.sprite.spritecollide(laser_sprite, self.aliens_group, True):
-                    laser_sprite.kill()
+                aliens_hit = pygame.sprite.spritecollide(laser_sprite, self.aliens_group, True) ##
+                if aliens_hit:
+                    for alien in aliens_hit:
+                        self.score += alien.alien_type * 100 # conta dano ao score
+                        laser_sprite.kill()
+
                 elif pygame.sprite.spritecollide(laser_sprite, self.mystery_ship_group, False):
                     self.mystery_health -= 1
                     laser_sprite.kill()
+                    
                     if self.mystery_health == 0:
+                        self.score += 500 # conta dano ao score apos matar a nave misteriosa
                         self.mystery_counter = 0
                         self.mystery_kill = True
                         self.mystery_ship_group.sprite.kill()
@@ -162,6 +169,7 @@ class Game:
         self.spaceship_group.add(Spaceship(self.screen_width, self.screen_height, self.offset, cur_pos))
         self.transformation_active = False
         self.transform_time = 0
+        self.score = 0
 
     def reset_game(self):
         self.spaceship_group.sprite.reset()
@@ -180,6 +188,7 @@ class Game:
 
         self.create_aliens()
         self.obstacles = self.create_obstacles()
+        
 
         self.game_state = True
 

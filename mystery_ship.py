@@ -10,7 +10,7 @@ class MysteryShip(pygame.sprite.Sprite):
         self.screen_width = screen_width
         self.offset = offset
         self.image = pygame.image.load('images/aliens/mystery.png')
-        self.x = choice([self.offset/2, self.screen_width + self.offset - self.image.get_width()])
+        self.x = choice([self.offset/2, self.screen_width + self.offset - self.image.get_width()]) # Escolhe se será sumonada no lado direito 
 
         if self.x == 0:
             self.speed = 3

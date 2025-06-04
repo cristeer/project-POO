@@ -10,4 +10,4 @@ class SuperSpaceship(Spaceship):
         original_spaceship = pygame.image.load('images/spaceship/spaceship.png')
         self.image = pygame.transform.scale2x(original_spaceship)
         self.rect = self.image.get_rect(midbottom=self.rect.midbottom)
-        self.laser_delay = 100
+        self.laser_delay = 100 # Reduz o delay ao mínimo imaginável

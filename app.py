@@ -22,7 +22,7 @@ MYSTERYSHIP_SPAWN = pygame.USEREVENT + 2
 pygame.time.set_timer(MYSTERYSHIP_SPAWN, randint(10000, 15000))
 
 SHOOT_MYSTERY_LASER = pygame.USEREVENT + 3
-pygame.time.set_timer(SHOOT_MYSTERY_LASER, 1000)
+pygame.time.set_timer(SHOOT_MYSTERY_LASER, 2000)
 
 # Setup
 screen = pygame.display.set_mode((SCREEN_WIDTH + OFFSET, SCREEN_HEIGHT + 2*OFFSET))
@@ -31,10 +31,6 @@ pygame.display.set_caption('Space Invaders')
 font = pygame.font.Font('fonts/monogram.ttf', 50)
 clock = pygame.time.Clock()
 game = Game(SCREEN_WIDTH, SCREEN_HEIGHT, OFFSET)
-
-spaceship = Spaceship(SCREEN_WIDTH, SCREEN_HEIGHT, OFFSET)
-spaceship_group = pygame.sprite.GroupSingle()
-spaceship_group.add(spaceship)
 
 # UI
 
@@ -54,7 +50,7 @@ while True:
         if event.type == SHOOT_MYSTERY_LASER and game.game_state:
             game.mystery_shoot()
 
-        if event.type == MYSTERYSHIP_SPAWN and game.game_state and game.mystery_counter == 0:
+        if event.type == MYSTERYSHIP_SPAWN and game.game_state and len(game.mystery_ship_group) == 0:
             game.create_mystery_ship()
             pygame.time.set_timer(MYSTERYSHIP_SPAWN, 0)
         
@@ -63,7 +59,7 @@ while True:
             game.reset_game()
 
     # Atualizar
-    if game.game_state:
+    if game.game_state == True:
         game.spaceship_group.update()
         game.aliens_lasers_group.update()
         game.mystery_ship_group.update()
@@ -99,24 +95,22 @@ while True:
     
     screen.fill(GREY)
 
+    # Exibe o menu de vidas se houver jogo rodando, caso contrário, exibe o game over
     if game.game_state:
         level_surface = font.render(f'LEVEL {game.level:02}', False, YELLOW)
         screen.blit(level_surface, (570, 740, 50, 50))
         x = 50
         for life in range(game.player_lives):
-            screen.blit(game.spaceship_group.sprite.image, (x, 745))
+            screen.blit(game.life_icon, (x, 745))
             x += 50
             
         screen.blit(score_text_surface, (50, 15, 50, 50))
         formatted_score = str(game.score).zfill(6)
         score_surface = font.render(formatted_score, False, YELLOW)
         screen.blit(score_surface, (50, 40, 50, 50))
-
+     
     else:
         screen.blit(game_over_surface, (570, 740, 50, 50))
-
-
-
 
     pygame.draw.rect(screen, YELLOW, (10, 10, 780, 780), 2, 0, 60, 60, 60, 60)
     pygame.draw.line(screen, YELLOW, (25, 730), (775, 730), 3)

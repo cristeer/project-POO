@@ -36,7 +36,7 @@ class Spaceship(pygame.sprite.Sprite):
         elif keys[pygame.K_LEFT]:
             self.rect.x -= self.speed
 
-        elif keys[pygame.K_SPACE] and self.laser_ready:
+        elif (keys[pygame.K_SPACE] or keys[pygame.K_UP]) and self.laser_ready:
             self.laser_ready = False
             laser = Laser(self.rect.center, 5, self.height)
             self.laser_group.add(laser)

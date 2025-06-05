@@ -16,15 +16,17 @@ class Game:
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.offset = offset
-        self.life_icon = pygame.image.load('images/spaceship/spaceship.png')
+        self.life_icon = pygame.image.load('images/spaceship/spaceship.png') # Mover para hud.pu
         self.life_icon = pygame.transform.scale(self.life_icon, (40, 25)) # Tive que criar este ícone em função da transformação do jogador.
-        self.explosion_sound = pygame.mixer.Sound('music/explosion.ogg')
+        self.explosion_sound = pygame.mixer.Sound('music/explosion.ogg') # Mudar para sound.py
         self.mystery_sound = pygame.mixer.Sound('music/laser-zap.mp3')
 
         # Variáveis da Lógica do Jogo
-        self.player_lives = 3
+        self.player_lives = 3 # Mudar para spaceship.py
         self.game_state = False
         self.level = 1
+        self.score = 0
+
         self.transformation_active = False # Transformação do jogador
         self.transformation_time = 0 # Contabilizar o tempo da transformação
         self.mystery_health = 3 # Vida da Nave Misteriosa
@@ -51,23 +53,31 @@ class Game:
         self.grid_instance = Grid()
         self.grid_instance.create_grid()
         obstacle_width = len(self.grid_instance.grid[0]) * 3
-        gap = ((self.screen_width + self.offset) - (4 * obstacle_width)) / 5
+
         obstacles = []
+        x = 650
+
         for i in range(4):
-            offset_x = (i + 1) * gap + i * obstacle_width
-            obstacle = Obstacle(offset_x, self.screen_height - 100)
+            obstacle = Obstacle(x, self.screen_height - 200)
             obstacles.append(obstacle)
+            x += 190
+        # gap = (1435 - (4 * obstacle_width)) / 5
+        # obstacles = []
+        # for i in range(4):
+        #     offset_x = (i + 1) * gap + i * obstacle_width
+        #     obstacle = Obstacle(offset_x, self.screen_height - 200)
+        #     obstacles.append(obstacle)
         return obstacles
     
     def create_aliens(self) -> None: # Cria os aliens
-        for row in range(5):
+        for row in range(7):
             for col in range(11):
-                self.x = 75 + col * 55
-                self.y = 110 + row * 55
+                self.x = 505 + col * 55
+                self.y = 220 + row * 55
 
-                if row == 0:
+                if row == 0 or row == 1:
                     self.alien_type = 3
-                elif row in (1, 2):
+                elif row > 1 and row < 6:
                     self.alien_type = 2
                 else:
                     self.alien_type = 1
@@ -79,11 +89,11 @@ class Game:
         self.aliens_group.update(self.aliens_direction)
 
         for alien in self.aliens_group:
-            if alien.rect.right >= (self.screen_width + self.offset/2):
+            if alien.rect.right >= (1415 - self.offset):
                 self.aliens_direction = -1
                 self._move_aliens_down_(2)
                 break
-            elif alien.rect.left <= self.offset/2:
+            elif alien.rect.left <= (485 + self.offset):
                 self.aliens_direction = 1
                 self._move_aliens_down_(2)
                 break
@@ -100,12 +110,12 @@ class Game:
             self.aliens_lasers_group.add(self.laser_sprite)
 
     def create_mystery_ship(self) -> None: # Cria Nave Misteriosa
-        self.mystery_ship_group.add(MysteryShip(self.screen_width, self.offset))
+        self.mystery_ship_group.add(MysteryShip(self.screen_width, self.offset, self.spaceship_group))
 
     def mystery_shoot(self) -> None: # Nave Misteriosa atira Lasers
         if self.mystery_ship_group:
             position = self.mystery_ship_group.sprite.rect.center
-            self.mystery_laser = MysteryLaser(position, -10, self.screen_height)
+            self.mystery_laser = MysteryLaser(position, -20, self.screen_height, self.spaceship_group)
             self.mystery_ship_lasers_group.add(self.mystery_laser)
             self.mystery_sound.play()
 
@@ -114,14 +124,20 @@ class Game:
         # Colisões da Nave/Jogador: 
         if self.spaceship_group.sprite.laser_group:
             for laser_sprite in self.spaceship_group.sprite.laser_group:
-                if pygame.sprite.spritecollide(laser_sprite, self.aliens_group, True):
-                    laser_sprite.kill()
+                aliens_hit = pygame.sprite.spritecollide(laser_sprite, self.aliens_group, True) ##
+                if aliens_hit:
+                    for alien in aliens_hit:
+                        self.score += alien.alien_type * 100 # conta dano ao score
+                        laser_sprite.kill()
                     self.explosion_sound.play()
+
 
                 elif pygame.sprite.spritecollide(laser_sprite, self.mystery_ship_group, False):
                     self.mystery_health -= 1
                     laser_sprite.kill()
+                    
                     if self.mystery_health == 0:
+                        self.score += 500 # conta dano ao score apos matar a nave misteriosa
                         self.explosion_sound.play()
                         self.mystery_kill = True
                         self.mystery_ship_group.sprite.kill()
@@ -170,30 +186,32 @@ class Game:
     def game_over(self) -> None: # Caso o jogo termine por morte do jogador
         self.game_state = False
         self.level = 1
-        self.player_lives = 3
-        cur_pos = self.spaceship_group.sprite.rect.midbottom
+        self.player_lives = 3 # Mudar para spaceship.py
+        #cur_pos = self.spaceship_group.sprite.rect.midbottom
         self.spaceship_group.empty()
-        self.spaceship_group.add(Spaceship(self.screen_width, self.screen_height, self.offset, cur_pos))
-        self.transformation_active = False
-        self.transform_time = 0
+        self.spaceship_group.add(Spaceship(self.screen_width, self.screen_height, self.offset))
+        self.transformation_active = False # Mudar para mystery_ship.py
+        self.transform_time = 0 # Mudar para mystery_ship.py
+        self.score = 0
 
     def reset_game(self) -> None: # Permite a troca de nível
         self.spaceship_group.sprite.reset()
-        self.transformation_active = False
+        self.transformation_active = False 
         self.transformation_time = 0
-        cur_pos = self.spaceship_group.sprite.rect.midbottom
+        #cur_pos = self.spaceship_group.sprite.rect.midbottom
         self.spaceship_group.empty()
-        self.spaceship_group.add(Spaceship(self.screen_width, self.screen_height, self.offset, cur_pos))
+        self.spaceship_group.add(Spaceship(self.screen_width, self.screen_height, self.offset))
 
         self.aliens_group.empty()
         self.aliens_lasers_group.empty()
+        self.aliens_direction += 1 # Incremento de dificuldade, não está completo
 
         self.mystery_ship_group.empty()
         self.mystery_health = 3
 
         self.create_aliens()
         self.obstacles = self.create_obstacles()
-
+        
         self.game_state = True
 
         pygame.time.set_timer(pygame.USEREVENT + 2, randint(10000, 15000))

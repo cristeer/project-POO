@@ -17,7 +17,7 @@ class Spaceship(pygame.sprite.Sprite):
         if position:
             self.rect = self.image.get_rect(midbottom = position)
         else:
-            self.rect = self.image.get_rect(midbottom = (self.width/2, self.height))
+            self.rect = self.image.get_rect(midbottom = (self.width/2, (self.height - 100)))
         
         #Laser
         self.laser_ready = True
@@ -45,11 +45,11 @@ class Spaceship(pygame.sprite.Sprite):
 
 
     def constrains(self):
-        if self.rect.right > self.width:
-            self.rect.right = self.width
+        if self.rect.right > (1415 - self.offset):
+            self.rect.right = (1415 - self.offset)
 
-        elif self.rect.left < self.offset:
-            self.rect.left = self.offset
+        elif self.rect.left < (485 + self.offset):
+            self.rect.left = (485 + self.offset)
 
     def recharge_laser(self):
         if not self.laser_ready:
@@ -66,5 +66,5 @@ class Spaceship(pygame.sprite.Sprite):
         self.recharge_laser()
 
     def reset(self):
-        self.rect = self.image.get_rect(midbottom = (self.width/2, self.height))
+        self.rect = self.image.get_rect(midbottom = (self.width/2, self.height - 100))
         self.laser_group.empty()

@@ -1,5 +1,5 @@
-import pygame
-import os
+import pygame, sys
+from button import Button
 
 class Display:
     def __init__(self, game):
@@ -34,39 +34,89 @@ class Display:
         self.game_over_surface = self.font.render('GAME OVER', False, self.YELLOW)
         self.score_text_surface = self.font.render('SCORE', False, self.YELLOW)
     
-    def draw_hud(self):
-        self.screen.fill(self.GREY)
-
-        # Exibe o menu de vidas se houver jogo rodando
-        if self.game.game_state:
-            level_surface = self.font.render(f'LEVEL {self.game.level:02}', False, self.YELLOW)
-            self.screen.blit(level_surface, (1225, 1020))
-            
-            x = 520
-            for life in range(self.game.spaceship.player_lives):
-                self.screen.blit(self.life_icon, (x, 1020))
-                x += 45
-                
-            self.screen.blit(self.score_text_surface, (520, 25))
-            formatted_score = str(self.game.score).zfill(6)
-            score_surface = self.font.render(formatted_score, False, self.YELLOW)
-            self.screen.blit(score_surface, (520, 50))
-        else:
-            self.screen.blit(self.game_over_surface, (self.screen_width//2 - 150, self.screen_height//2))
-            start_text = self.font.render('Press SPACE to start', False, self.YELLOW)
-            self.screen.blit(start_text, (self.screen_width//2 - 200, self.screen_height//2 + 50))
-        
-        # Desenhar bordas do jogo
-        pygame.draw.rect(self.screen, self.YELLOW, (485, 10, 950, 1060), 2, 0, 60, 60, 60, 60)
-        pygame.draw.line(self.screen, self.YELLOW, (505, 1010), (1415, 1010), 3)
-        
-        # Desenhar sprites
+    def game_elements(self) -> None: # Desenhar sprites
         self.game.spaceship.spaceship_group.draw(self.screen)
         self.game.spaceship.laser_group.draw(self.screen)
         self.game.alien.aliens_group.draw(self.screen)
         self.game.alien.aliens_lasers_group.draw(self.screen)
         self.game.mystery_ship.mystery_ship_group.draw(self.screen)
         self.game.mystery_ship.mystery_ship_lasers_group.draw(self.screen)
-
         for obstacle in self.game.obstacles:
             obstacle.blocks_group.draw(self.screen)
+
+    def ui_elements(self) -> None: # Desenhar bordas do jogo
+        pygame.draw.rect(self.screen, self.YELLOW, (485, 10, 950, 1060), 2, 0, 60, 60, 60, 60)
+        pygame.draw.line(self.screen, self.YELLOW, (505, 1010), (1415, 1010), 3)
+        level_surface = self.font.render(f'LEVEL {self.game.level:02}', False, self.YELLOW)
+        self.screen.blit(level_surface, (1225, 1020))
+        
+        x = 520
+        for life in range(self.game.spaceship.player_lives):
+            self.screen.blit(self.life_icon, (x, 1020))
+            x += 45
+            
+        self.screen.blit(self.score_text_surface, (520, 25))
+        formatted_score = str(self.game.score).zfill(6)
+        score_surface = self.font.render(formatted_score, False, self.YELLOW)
+        self.screen.blit(score_surface, (520, 50))
+
+    def draw_game(self):
+        self.screen.fill(self.GREY)
+
+        if self.game.game_state:
+            self.ui_elements()
+            self.game_elements()
+
+        else:
+            self.main_menu()
+            pygame.display.flip()
+        
+
+    def main_menu(self):
+        # Sobrepõe a imagem
+        self.screen.fill(self.GREY)
+
+        # Título
+        self.title_font = pygame.font.Font('fonts/monogram.ttf', 100)
+        self.button_font = pygame.font.Font('fonts/monogram.ttf', 80)
+        self.GAME_TITLE = self.title_font.render("SPACE INVADERS", True, self.YELLOW)
+        self.GAME_TITLE_RECT = self.GAME_TITLE.get_rect(center = (960, 200))
+         
+        # Botões
+        self.play_button = Button(image = None, pos = (960, 490), text_input = 'Play', font = self.button_font,base_color = "White", hovering_color = "#b68f40")
+        
+        self.settings_button = Button(image = None, pos = (960, 640), text_input = 'Settings', font = self.button_font,base_color = "White", hovering_color = "#b68f40")
+        
+        self.ranking_button = Button(image = None, pos = (960, 790), text_input = 'Ranking', font = self.button_font,base_color = "White", hovering_color = "#b68f40")
+
+        self.quit_button = Button(image = None, pos = (960, 940), text_input = 'Quit', font = self.button_font,base_color = "White", hovering_color = "#b68f40")
+
+        MOUSE_POS = pygame.mouse.get_pos()
+
+        # Exibe o menu
+        self.screen.blit(self.GAME_TITLE, self.GAME_TITLE_RECT)
+        
+        for button in [self.play_button, self.settings_button, self.ranking_button, self.quit_button]:
+            button.changeColor(MOUSE_POS)
+            button.update(self.screen)
+        
+        for event in pygame.event.get():
+            
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.play_button.checkForInput(MOUSE_POS):
+                    self.game.reset_game()
+                    return
+
+                if self.quit_button.checkForInput(MOUSE_POS):
+                    pygame.quit()
+                    sys.exit()
+
+                if self.settings_button.checkForInput(MOUSE_POS):
+                    pass
+
+                if self.ranking_button.checkForInput(MOUSE_POS):
+                    pass

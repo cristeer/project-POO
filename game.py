@@ -178,6 +178,6 @@ class Game:
                 if current_time - self.spaceship.transformation_time >= 10000:
                     self.spaceship.reset_transformation()
 
-            self.display.draw_hud()
+            self.display.draw_game()
             pygame.display.update()
             self.clock.tick(60)

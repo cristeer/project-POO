@@ -1,4 +1,5 @@
 import pygame
+import json
 from random import choice, randint
 
 from spaceship import Spaceship
@@ -26,6 +27,8 @@ class Game:
         self.game_state = False
         self.level = 1
         self.score = 0
+        self.highscore = 0 
+        self.load_highscore()
 
         self.transformation_active = False # Transformação do jogador
         self.transformation_time = 0 # Contabilizar o tempo da transformação
@@ -120,6 +123,7 @@ class Game:
                 if aliens_hit:
                     for alien in aliens_hit:
                         self.score += alien.alien_type * 100 # conta dano ao score
+                        self.check_for_highscore() 
                         laser_sprite.kill()
                     self.explosion_sound.play()
 
@@ -130,6 +134,7 @@ class Game:
                     
                     if self.mystery_health == 0:
                         self.score += 500 # conta dano ao score apos matar a nave misteriosa
+                        self.check_for_highscore()
                         self.explosion_sound.play()
                         self.mystery_kill = True
                         self.mystery_ship_group.sprite.kill()
@@ -207,3 +212,19 @@ class Game:
         self.game_state = True
 
         pygame.time.set_timer(pygame.USEREVENT + 2, randint(10000, 15000))
+    
+    def check_for_highscore(self):
+        if self.score > self.highscore:
+            self.highscore = self.score
+            
+            #Salva o highscore em um arquivo JSON
+            with open('highscore.json', 'w') as file: 
+                json.dump(self.highscore, file)
+
+    # Carrega o highscore do arquivo JSON
+    def load_highscore(self):
+        try: #tenta abrir highscore.json para leitura
+            with open('highscore.json', 'r') as file:
+                self.highscore = int(json.load(file)) #lê e converte o valor para int
+        except FileNotFoundError(): #se nao existir o arquivo, define o highscore como 0
+            self.highscore = 0

@@ -4,7 +4,7 @@ from random import choice
 import os
 
 class Alien(pygame.sprite.Sprite):
-    def __init__(self, offset: int, alien_type: int = None, x: int = None, y: int = 0):
+    def __init__(self, offset: int, alien_type: int = 1, x: int = None, y: int = 0):
         super().__init__()
       
         self.alien_type = alien_type

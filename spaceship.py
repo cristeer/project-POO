@@ -14,15 +14,9 @@ class Spaceship(pygame.sprite.Sprite):
         self.speed = 6
         self.player_lives = 3
 
-        # Carregar imagem da spaceship
-        try:
-            self.original_image = pygame.image.load('images/spaceship/spaceship.png')
-            self.image = self.original_image.copy()
-        except:
-            # Fallback se não encontrar a imagem
-            self.original_image = pygame.Surface((50, 30))
-            self.original_image.fill((0, 255, 0))
-            self.image = self.original_image.copy()
+        # Carregar imagem da nave
+        self.original_image = pygame.image.load('images/spaceship/spaceship.png')
+        self.image = self.original_image.copy()
         
         if position:
             self.rect = self.image.get_rect(midbottom=position)

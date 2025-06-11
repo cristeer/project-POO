@@ -16,18 +16,7 @@ class Alien(pygame.sprite.Sprite):
         self.aliens_lasers_group = pygame.sprite.Group()
         
         # Carregar imagem do alien baseado no tipo
-        if alien_type:
-            try:
-                self.image = pygame.image.load(f'images/aliens/alien_{self.alien_type}.png')
-            except:
-                # Fallback se não encontrar a imagem
-                colors = {1: (255, 0, 0), 2: (0, 0, 255), 3: (255, 255, 255)}
-                self.image = pygame.Surface((40, 30))
-                self.image.fill(colors.get(self.alien_type, (255, 0, 0)))
-        else:
-            self.image = pygame.Surface((40, 30))
-            self.image.fill((255, 0, 0))
-            
+        self.image = pygame.image.load(f'images/aliens/alien_{self.alien_type}.png')
         self.rect = self.image.get_rect(topleft=(x or 0, y))
     
     def create_aliens(self, offset: int) -> None:

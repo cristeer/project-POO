@@ -9,7 +9,7 @@ class Laser(pygame.sprite.Sprite):
 
         self.image = pygame.Surface((8, 20))
         self.image.fill(YELLOW)
-        self.rect = self.image.get_rect(center=position or (0, 0))
+        self.rect = self.image.get_rect(center = position or (0, 0))
 
     def destroy(self) -> None:
         if self.rect.y + 20 > self.height or self.rect.y < 0:

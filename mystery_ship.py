@@ -15,13 +15,7 @@ class MysteryShip(pygame.sprite.Sprite):
         self.mystery_sound = Sound().mystery_sound
 
         # Carregar imagem da nave misteriosa
-        try:
-            self.image = pygame.image.load('images/aliens/mystery.png')
-        except:
-            # Fallback se não encontrar a imagem
-            self.image = pygame.Surface((60, 40))
-            self.image.fill((255, 0, 255))  # Magenta
-            
+        self.image = pygame.image.load('images/aliens/mystery.png')    
         self.rect = self.image.get_rect(topleft=(spaceship.rect.x, 140))
 
         self.mystery_health = 3

@@ -1,7 +1,5 @@
-import pygame
-import json
-import sys
-from random import choice, randint
+import pygame, json, sys
+from random import randint
 
 from spaceship import Spaceship
 from obstacle import Obstacle
@@ -18,6 +16,10 @@ class Game:
         self.screen_width = pygame.display.Info().current_w
         self.screen_height = pygame.display.Info().current_h
         self.offset = 50
+
+        # Setup
+        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height), pygame.FULLSCREEN)
+        pygame.display.set_caption('Space Invaders')
         
         # Eventos Periódicos
         self.SHOOT_LASER = pygame.USEREVENT + 1
@@ -36,7 +38,7 @@ class Game:
         self.highscore = 0
         self.load_highscore()
         self.clock = pygame.time.Clock()
-        
+
         # Objetos
         self.spaceship = Spaceship(self.screen_width, self.screen_height, self.offset)
         self.mystery_ship = MysteryShip(self.screen_width, self.screen_height, self.offset, self.spaceship)
@@ -46,9 +48,8 @@ class Game:
         
         self.display = Display(self)
         self.sound = Sound()
-        self.sound.load_music()
-        
-        
+        self.sound.loop_music()
+
     def check_for_collisions(self) -> None:
         # Colisões dos lasers do jogador
         for laser_sprite in self.spaceship.laser_group:
@@ -154,11 +155,8 @@ class Game:
         try: #tenta abrir highscore.json para leitura
             with open('highscore.json', 'r') as file:
                 self.highscore = int(json.load(file)) #lê e converte o valor para int
-        except FileNotFoundError(): #se nao existir o arquivo, define o highscore como 0
+        except FileNotFoundError: #se nao existir o arquivo, define o highscore como 0
             self.highscore = 0
-
-
-
 
     def run_game(self) -> None:
         while True:
@@ -194,6 +192,7 @@ class Game:
 
                 if len(self.alien.aliens_group) == 0:
                     self.level += 1
+                    self.display.surfaces.level_surface = self.display.fonts.font.render(f'LEVEL {self.level:02}', False, self.display.YELLOW)
                     self.reset_game()
 
             if self.spaceship.transformation_active and self.mystery_ship.mystery_kill:
@@ -204,8 +203,7 @@ class Game:
                 current_time = pygame.time.get_ticks()
                 if current_time - self.spaceship.transformation_time >= 10000:
                     self.spaceship.reset_transformation()
-            
+
             self.display.draw_game()
             pygame.display.update()
             self.clock.tick(60)
-            

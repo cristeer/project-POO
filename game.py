@@ -158,10 +158,73 @@ class Game:
         except FileNotFoundError: #se nao existir o arquivo, define o highscore como 0
             self.highscore = 0
 
+    def save_game(self) -> None:
+        mystery_ship_position = None
+        spaceship_position = None
+    
+        if len(self.mystery_ship.mystery_ship_group) > 0:
+            mystery_ship_position = list(self.mystery_ship.mystery_ship_group.sprite.rect.topleft)
+    
+        if len(self.spaceship.spaceship_group) > 0:
+            spaceship_position = list(self.spaceship.spaceship_group.sprite.rect.topleft)
+
+        game_data = {
+            'level': self.level,
+            'score': self.score,
+            'highscore': self.highscore,
+            'lives': self.spaceship.player_lives,
+            'transformation_active': self.spaceship.transformation_active,
+            'transformation_time': self.spaceship.transformation_time,
+            'mystery_health': self.mystery_ship.mystery_health,
+            'mystery_kill': self.mystery_ship.mystery_kill,
+            'mystery_active': len(self.mystery_ship.mystery_ship_group) > 0,
+            'mystery_ship_position': mystery_ship_position,
+            'spaceship_position': spaceship_position
+        }
+        with open('save_game.json', 'w') as file:
+            json.dump(game_data, file)
+        
+    def load_game(self):
+        try:
+            with open('save_game.json', 'r') as file:
+                game_data = json.load(file)
+
+                self.level = game_data['level']
+                self.score = game_data['score']
+                self.highscore = game_data['highscore']
+                self.spaceship.player_lives = game_data['lives']
+                self.spaceship.transformation_active = game_data['transformation_active']
+                self.transformation_time = game_data['transformation_time']
+                self.mystery_ship.mystery_health = game_data['mystery_health']
+                self.mystery_ship.mystery_kill = game_data['mystery_kill']
+
+                # Recria grupos sem resetar posições
+                self.alien.aliens_group.empty()
+                self.alien.aliens_lasers_group.empty()
+                self.alien.create_aliens(self.offset)
+                self.obstacles = self.obstacle.create_obstacles(self.screen_height)
+                
+                #Posiciona a spaceship e mystery_ship
+                self.spaceship.spaceship_group.empty()
+                self.spaceship.spaceship_group.add(self.spaceship)
+                if game_data.get('spaceship_position'):
+                    self.spaceship.spaceship_group.sprite.rect.topleft = game_data['spaceship_position']
+                
+                if game_data['mystery_active'] and game_data.get('mystery_ship_position'):
+                    self.mystery_ship.mystery_ship_group.empty()
+                    self.mystery_ship.create_mystery_ship()
+                    self.mystery_ship.mystery_ship_group.sprite.rect.topleft = game_data['mystery_ship_position']
+
+                self.game_state = True
+                return True
+        except FileNotFoundError:
+            return False
+
     def run_game(self) -> None:
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    self.save_game()
                     pygame.quit()
                     sys.exit()
 
@@ -178,6 +241,9 @@ class Game:
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_SPACE] and self.game_state == False:
                     self.reset_game()
+                if keys[pygame.K_l] and self.game_state == False: 
+                    if self.load_game():
+                        self.game_state = True #concertar depois pra ser acessado no menu 
 
             # Atualizar
             if self.game_state == True:
@@ -207,3 +273,5 @@ class Game:
             self.display.draw_game()
             pygame.display.update()
             self.clock.tick(60)
+
+    

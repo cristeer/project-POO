@@ -7,11 +7,24 @@ from alien import Alien
 from mystery_ship import MysteryShip
 from display import Display
 from sound import Sound
+from black_hole import BlackHole
+from save import Save
 
 class Game:
     def __init__(self) -> None:
         pygame.init()
         
+        self.sound = Sound()
+        self.sound.loop_music()
+
+        # Variáveis da Lógica do Jogo
+        self.game_state = False
+        self.level = 1
+        self.score = 0
+        self.highscore = 0
+        self.load_highscore()
+        self.clock = pygame.time.Clock()
+
         # Configurações da tela
         self.screen_width = pygame.display.Info().current_w
         self.screen_height = pygame.display.Info().current_h
@@ -31,13 +44,8 @@ class Game:
         self.SHOOT_MYSTERY_LASER = pygame.USEREVENT + 3
         pygame.time.set_timer(self.SHOOT_MYSTERY_LASER, 2000)
 
-        # Variáveis da Lógica do Jogo
-        self.game_state = False
-        self.level = 1
-        self.score = 0
-        self.highscore = 0
-        self.load_highscore()
-        self.clock = pygame.time.Clock()
+        self.BLACK_HOLE_SPAWN = pygame.USEREVENT + 4
+        pygame.time.set_timer(self.BLACK_HOLE_SPAWN, randint(10000, 15000))
 
         # Objetos
         self.spaceship = Spaceship(self.screen_width, self.screen_height, self.offset)
@@ -45,10 +53,10 @@ class Game:
         self.alien = Alien(self.offset)
         self.obstacle = Obstacle()
         self.obstacles = []
+        self.black_hole = BlackHole(self.spaceship, x = 400, y = 750, offset = 50) #corrigir, não está dinamizado 
         
         self.display = Display(self)
-        self.sound = Sound()
-        self.sound.loop_music()
+        self.save = Save(self)
 
     def check_for_collisions(self) -> None:
         # Colisões dos lasers do jogador
@@ -61,7 +69,7 @@ class Game:
                     self.check_for_highscore()
                     laser_sprite.kill()
                 self.sound.explosion_sound.play()
-
+                
             # Colisão com nave misteriosa
             if pygame.sprite.spritecollide(laser_sprite, self.mystery_ship.mystery_ship_group, False):
                 self.mystery_ship.mystery_health -= 1
@@ -115,32 +123,36 @@ class Game:
     def game_over(self) -> None:
         self.game_state = False
         self.level = 1
+        self.display.surfaces.level_surface = self.display.fonts.font.render(f'LEVEL {self.level:02}', False, self.display.YELLOW)
         self.spaceship.player_lives = 3 
         self.spaceship.transformation_active = False
         self.spaceship.transformation_time = 0
         self.score = 0
+        self.black_hole.destroy_black_hole()
 
     def reset_game(self) -> None:
-        self.spaceship.reset()
-        self.spaceship.transformation_active = False 
-        self.spaceship.transformation_time = 0
+        # Nave/Jogador
+        self.spaceship.destroy_spaceship() # implementar destrutor
+        self.spaceship.create_spaceship()
 
-        self.spaceship.spaceship_group.empty()
-        self.spaceship.spaceship_group.add(self.spaceship)
-
-        self.alien.aliens_group.empty()
-        self.alien.aliens_lasers_group.empty()
-        self.alien.aliens_direction = 1
-
-        self.mystery_ship.mystery_ship_group.empty()
-        self.mystery_ship.mystery_health = 3
-        self.mystery_ship.mystery_kill = False
-
+        # Aliens
+        self.alien.destroy_aliens() # implementar no destrutor
         self.alien.create_aliens(self.offset)
+        
+        #Nave Misteriosa
+        self.mystery_ship.destroy_mystery_ship() #implementar no destrutor
+
+        # Buraco Negro
+        self.black_hole.destroy_black_hole()
+
+        # Obstaculos
         self.obstacles = self.obstacle.create_obstacles(self.screen_height)
 
-        self.game_state = True
+        # Reseta eventos periódicos
         pygame.time.set_timer(self.MYSTERYSHIP_SPAWN, randint(10000, 15000))
+        pygame.time.set_timer(self.BLACK_HOLE_SPAWN, randint(10000, 15000))
+
+        self.game_state = True
 
     def check_for_highscore(self):
         if self.score > self.highscore:
@@ -158,73 +170,12 @@ class Game:
         except FileNotFoundError: #se nao existir o arquivo, define o highscore como 0
             self.highscore = 0
 
-    def save_game(self) -> None:
-        mystery_ship_position = None
-        spaceship_position = None
-    
-        if len(self.mystery_ship.mystery_ship_group) > 0:
-            mystery_ship_position = list(self.mystery_ship.mystery_ship_group.sprite.rect.topleft)
-    
-        if len(self.spaceship.spaceship_group) > 0:
-            spaceship_position = list(self.spaceship.spaceship_group.sprite.rect.topleft)
-
-        game_data = {
-            'level': self.level,
-            'score': self.score,
-            'highscore': self.highscore,
-            'lives': self.spaceship.player_lives,
-            'transformation_active': self.spaceship.transformation_active,
-            'transformation_time': self.spaceship.transformation_time,
-            'mystery_health': self.mystery_ship.mystery_health,
-            'mystery_kill': self.mystery_ship.mystery_kill,
-            'mystery_active': len(self.mystery_ship.mystery_ship_group) > 0,
-            'mystery_ship_position': mystery_ship_position,
-            'spaceship_position': spaceship_position
-        }
-        with open('save_game.json', 'w') as file:
-            json.dump(game_data, file)
-        
-    def load_game(self):
-        try:
-            with open('save_game.json', 'r') as file:
-                game_data = json.load(file)
-
-                self.level = game_data['level']
-                self.score = game_data['score']
-                self.highscore = game_data['highscore']
-                self.spaceship.player_lives = game_data['lives']
-                self.spaceship.transformation_active = game_data['transformation_active']
-                self.transformation_time = game_data['transformation_time']
-                self.mystery_ship.mystery_health = game_data['mystery_health']
-                self.mystery_ship.mystery_kill = game_data['mystery_kill']
-
-                # Recria grupos sem resetar posições
-                self.alien.aliens_group.empty()
-                self.alien.aliens_lasers_group.empty()
-                self.alien.create_aliens(self.offset)
-                self.obstacles = self.obstacle.create_obstacles(self.screen_height)
-                
-                #Posiciona a spaceship e mystery_ship
-                self.spaceship.spaceship_group.empty()
-                self.spaceship.spaceship_group.add(self.spaceship)
-                if game_data.get('spaceship_position'):
-                    self.spaceship.spaceship_group.sprite.rect.topleft = game_data['spaceship_position']
-                
-                if game_data['mystery_active'] and game_data.get('mystery_ship_position'):
-                    self.mystery_ship.mystery_ship_group.empty()
-                    self.mystery_ship.create_mystery_ship()
-                    self.mystery_ship.mystery_ship_group.sprite.rect.topleft = game_data['mystery_ship_position']
-
-                self.game_state = True
-                return True
-        except FileNotFoundError:
-            return False
 
     def run_game(self) -> None:
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.save_game()
+                    self.save.save_game()
                     pygame.quit()
                     sys.exit()
 
@@ -234,6 +185,10 @@ class Game:
                 if event.type == self.SHOOT_MYSTERY_LASER and self.game_state:
                     self.mystery_ship.mystery_shoot()
 
+                if event.type == self.BLACK_HOLE_SPAWN:
+                    self.black_hole.create_black_hole()
+                    pygame.time.set_timer(self.BLACK_HOLE_SPAWN, 0)
+
                 if event.type == self.MYSTERYSHIP_SPAWN and self.game_state and len(self.mystery_ship.mystery_ship_group) == 0:
                     self.mystery_ship.create_mystery_ship()
                     pygame.time.set_timer(self.MYSTERYSHIP_SPAWN, 0)
@@ -241,8 +196,9 @@ class Game:
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_SPACE] and self.game_state == False:
                     self.reset_game()
+                    
                 if keys[pygame.K_l] and self.game_state == False: 
-                    if self.load_game():
+                    if self.save.load_game():
                         self.game_state = True #concertar depois pra ser acessado no menu 
 
             # Atualizar
@@ -253,6 +209,7 @@ class Game:
                 self.alien.aliens_lasers_group.update()
                 self.mystery_ship.mystery_ship_group.update()
                 self.mystery_ship.mystery_ship_lasers_group.update()
+                self.black_hole.update()
                 self.alien.move_aliens(self.offset)
                 self.check_for_collisions()
 
@@ -262,16 +219,14 @@ class Game:
                     self.reset_game()
 
             if self.spaceship.transformation_active and self.mystery_ship.mystery_kill:
-                self.spaceship.super_spaceship()
+                self.spaceship.super_spaceship_activate()
                 self.mystery_ship.mystery_kill = False
 
             if self.spaceship.transformation_active:
                 current_time = pygame.time.get_ticks()
                 if current_time - self.spaceship.transformation_time >= 10000:
-                    self.spaceship.reset_transformation()
+                    self.spaceship.super_spaceship_reset()
 
             self.display.draw_game()
             pygame.display.update()
             self.clock.tick(60)
-
-    

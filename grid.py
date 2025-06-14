@@ -1,6 +1,15 @@
 class Grid:
     def __init__(self):
-        self.grid = []
+        self.__grid = []
+
+    # Setters e Getters
+    @property
+    def grid(self):
+        return self.__grid
+
+    @grid.setter
+    def grid(self,value):
+        self.__grid = value
 
     def create_grid(self):
         self.grid = [
@@ -18,3 +27,4 @@ class Grid:
             [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
             [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1]
         ]
+        return self

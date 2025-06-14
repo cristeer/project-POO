@@ -1,43 +1,174 @@
 import pygame
 from laser import Laser
 from sound import Sound
-import os
 
 class Spaceship(pygame.sprite.Sprite):
     def __init__(self, width: int, height: int, offset: int, position=None) -> None:
         super().__init__()
 
         # Globais
-        self.width = width
-        self.height = height
-        self.offset = offset
-        self.speed = 6
-        self.player_lives = 3
+        self.__width = width
+        self.__height = height
+        self.__offset = offset
+        self.__speed = 6
+        self.__player_lives = 3
 
         # Carregar imagem da nave
-        self.original_image = pygame.image.load('images/spaceship/spaceship.png')
-        self.image = self.original_image.copy()
+        self.__original_image = pygame.image.load('images/spaceship/spaceship.png')
+        self.__image = self.original_image.copy()
         
         if position:
-            self.rect = self.image.get_rect(midbottom=position)
+            self.rect = self.image.get_rect(midbottom = position) #Definido como publico devido a ser um requisito do pygame para funcionamento dos sprites
         else:
-            self.rect = self.image.get_rect(midbottom=(self.width/2, self.height - 100))
+            self.rect = self.image.get_rect(midbottom = (self.width/2, self.height - 100))
         
+        self.__current_time = 0 #Possivel problema de encapsulamento
+
         # Laser
-        self.laser_ready = True
-        self.laser_delay = 300
-        self.laser_time = 0
-        self.laser_group = pygame.sprite.Group()
-        self.laser_sound = Sound().laser_sound
+        self.__laser_ready = True
+        self.__laser_delay = 300
+        self.__laser_time = 0
+        self.__laser_group = pygame.sprite.Group()
+        self.__laser_sound = Sound().laser_sound
 
         # Super
-        self.transformation_active = False
-        self.transformation_time = 0
+        self.__transformation_active = False
+        self.__transformation_time = 0
 
         # Sprites do Jogador
-        self.spaceship_group = pygame.sprite.GroupSingle()
+        self.__spaceship_group = pygame.sprite.GroupSingle()
         self.spaceship_group.add(self)
 
+    # Setters e Getters
+    @property
+    def width(self):
+        return self.__width
+
+    @width.setter
+    def width(self, value):
+        self.__width = value
+
+    @property
+    def height(self):
+        return self.__height
+
+    @height.setter
+    def height(self, value):
+        self.__height = value
+
+    @property
+    def offset(self):
+        return self.__offset
+
+    @offset.setter
+    def offset(self, value):
+        self.__offset = value
+
+    @property
+    def speed(self):
+        return self.__speed
+
+    @speed.setter
+    def speed(self, value):
+        self.__speed = value
+
+    @property
+    def player_lives(self):
+        return self.__player_lives
+
+    @player_lives.setter
+    def player_lives(self, value):
+        self.__player_lives = value
+
+    @property
+    def original_image(self):
+        return self.__original_image
+
+    @original_image.setter
+    def original_image(self, value):
+        self.__original_image = value
+
+    @property
+    def image(self):
+        return self.__image
+
+    @image.setter
+    def image(self, value):
+        self.__image = value
+    
+    @property
+    def current_time(self):
+        return self.__current_time
+    
+    @current_time.setter
+    def current_time(self, value):
+        self.__current_time = value
+
+    @property
+    def laser_ready(self):
+        return self.__laser_ready
+
+    @laser_ready.setter
+    def laser_ready(self, value):
+        self.__laser_ready = value
+
+    @property
+    def laser_delay(self):
+        return self.__laser_delay
+
+    @laser_delay.setter
+    def laser_delay(self, value):
+        self.__laser_delay = value
+
+    @property
+    def laser_time(self):
+        return self.__laser_time
+
+    @laser_time.setter
+    def laser_time(self, value):
+        self.__laser_time = value
+
+    @property
+    def laser_group(self):
+        return self.__laser_group
+
+    @laser_group.setter
+    def laser_group(self, value):
+        self.__laser_group = value
+
+    @property
+    def laser_sound(self):
+        return self.__laser_sound
+
+    @laser_sound.setter
+    def laser_sound(self, value):
+        self.__laser_sound = value
+    
+    @property
+    def transformation_active(self):
+        return self.__transformation_active
+
+    @transformation_active.setter
+    def transformation_active(self, value):
+        self.__transformation_active = value
+
+    @property
+    def transformation_time(self):
+        return self.__transformation_time
+
+    @transformation_time.setter
+    def transformation_time(self, value):
+        self.__transformation_time = value
+
+    @property
+    def spaceship_group(self):
+        return self.__spaceship_group
+    
+    @spaceship_group.setter
+    def spaceship_group(self, value):
+        self.__spaceship_group = value
+
+    # Métodos
     def get_user_input(self) -> None:
         keys = pygame.key.get_pressed()
 
@@ -80,7 +211,7 @@ class Spaceship(pygame.sprite.Sprite):
         # Transformar a nave (aumentar tamanho)
         self.image = pygame.transform.scale2x(self.original_image)
         old_center = self.rect.center
-        self.rect = self.image.get_rect(center=old_center)
+        self.rect = self.image.get_rect(center = old_center)
         self.laser_delay = 100
         self.transformation_time = pygame.time.get_ticks()
 
@@ -88,11 +219,11 @@ class Spaceship(pygame.sprite.Sprite):
         self.speed = 6
         self.image = self.original_image.copy()
         old_center = self.rect.center
-        self.rect = self.image.get_rect(center=old_center)
+        self.rect = self.image.get_rect(center = old_center)
         self.laser_delay = 300
         self.transformation_active = False
         self.transformation_time = 0
 
     def reset(self) -> None:
-        self.rect = self.image.get_rect(midbottom=(self.width/2, self.height - 100))
+        self.rect = self.image.get_rect(midbottom = (self.width/2, self.height - 100))
         self.laser_group.empty()

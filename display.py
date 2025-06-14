@@ -3,24 +3,25 @@ import pygame, sys
 from button import Button
 from fonts import Fonts
 from surfaces import Surfaces
+from settings import Settings
 
 class Display:
     def __init__(self, game):
-        
+
+        self.game = game
+
         self.GREY = (29, 29, 27)
         self.YELLOW = (243, 216, 63)
-        self.game = game
 
         self.screen_width = game.screen_width
         self.screen_height = game.screen_height
         self.offset = game.offset
+        self.screen = game.screen
 
         self.fonts = Fonts()
         self.surfaces = Surfaces(self, game)
+        self.settings = Settings(self)
 
-        
-        self.screen = game.screen
-        
         # Scroll control
         self.bg_scroll_y = 0
         self.bg_scroll_speed = 1
@@ -36,8 +37,11 @@ class Display:
         self.game.alien.aliens_lasers_group.draw(self.screen)
         self.game.mystery_ship.mystery_ship_group.draw(self.screen)
         self.game.mystery_ship.mystery_ship_lasers_group.draw(self.screen)
+        self.game.black_hole.black_hole_group.draw(self.screen)
+
         for obstacle in self.game.obstacles:
             obstacle.blocks_group.draw(self.screen)
+
 
     def ui_elements(self) -> None: # Desenhar bordas do jogo
 
@@ -65,9 +69,15 @@ class Display:
             
         self.screen.blit(self.surfaces.score_text_surface, (520, 25))
 
+
     def draw_game(self):
+
         self.screen.fill(self.GREY)
 
+        if self.settings.settings_state:
+            self.settings.draw_settings()
+            return
+        
         if self.game.game_state:
             self.update_background_position()
             
@@ -79,8 +89,8 @@ class Display:
             self.game_elements()
         else:
             self.main_menu()
-            pygame.display.flip()
         
+        pygame.display.flip()
 
     def main_menu(self):
 
@@ -91,13 +101,13 @@ class Display:
         self.GAME_TITLE_RECT = self.GAME_TITLE.get_rect(center = (960, 200))
          
         # Botões
-        self.play_button = Button(image = None, pos = (960, 490), text_input = 'Play', font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
+        self.play_button = Button(pos = (960, 490), text_input = 'Play', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
         
-        self.settings_button = Button(image = None, pos = (960, 640), text_input = 'Settings', font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
+        self.settings_button = Button(pos = (960, 640), text_input = 'Settings', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
         
-        self.ranking_button = Button(image = None, pos = (960, 790), text_input = 'Ranking', font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
+        self.ranking_button = Button(pos = (960, 790), text_input = 'Ranking', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
 
-        self.quit_button = Button(image = None, pos = (960, 940), text_input = 'Quit', font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
+        self.quit_button = Button(pos = (960, 940), text_input = 'Quit', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
 
         MOUSE_POS = pygame.mouse.get_pos()
 
@@ -124,7 +134,8 @@ class Display:
                     sys.exit()
 
                 if self.settings_button.checkForInput(MOUSE_POS):
-                    pass
+                    self.settings.settings_state = True
+                    return
 
                 if self.ranking_button.checkForInput(MOUSE_POS):
                     pass

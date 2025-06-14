@@ -1,24 +1,81 @@
 import pygame
 from laser import Laser
 from random import choice
-import os
 
 class Alien(pygame.sprite.Sprite):
-    def __init__(self, offset: int, alien_type: int = None, x: int = None, y: int = 0):
+
+    def __init__(self, offset: int, alien_type: int = 1, x: int = None, y: int = 0):
         super().__init__()
-      
-        self.alien_type = alien_type
-        self.offset = offset
-        self.aliens_direction = 1
         
+        self.__alien_type = alien_type
+        self.__offset = offset
+        self.__aliens_direction = 1
+
         # Sprites
-        self.aliens_group = pygame.sprite.Group()
-        self.aliens_lasers_group = pygame.sprite.Group()
+        self.__aliens_group = pygame.sprite.Group()
+        self.__aliens_lasers_group = pygame.sprite.Group()
         
         # Carregar imagem do alien baseado no tipo
-        self.image = pygame.image.load(f'images/aliens/alien_{self.alien_type}.png')
-        self.rect = self.image.get_rect(topleft=(x or 0, y))
-    
+        self.__image = pygame.image.load(f'images/aliens/alien_{self.alien_type}.png')
+        self.__rect = self.image.get_rect(topleft = (x or 0, y))
+
+    # Setters e Getters
+    @property
+    def alien_type(self):
+        return self.__alien_type
+
+    @alien_type.setter
+    def alien_type(self, value):
+        self.__alien_type = value
+
+    @property
+    def offset(self):
+        return self.__offset
+
+    @offset.setter
+    def offset(self, value):
+        self.__offset = value
+
+    @property
+    def aliens_direction(self):
+        return self.__aliens_direction
+
+    @aliens_direction.setter
+    def aliens_direction(self, value):
+        self.__aliens_direction = value
+
+    @property
+    def aliens_group(self):
+        return self.__aliens_group
+
+    @aliens_group.setter
+    def aliens_group(self, value):
+        self.__aliens_group = value
+
+    @property
+    def aliens_lasers_group(self):
+        return self.__aliens_lasers_group
+
+    @aliens_lasers_group.setter
+    def aliens_lasers_group(self, value):
+        self.__aliens_lasers_group = value
+
+    @property
+    def image(self):
+        return self.__image
+
+    @image.setter
+    def image(self, value):
+        self.__image = value
+
+    @property
+    def rect(self):
+        return self.__rect
+
+    @rect.setter
+    def rect(self, value):
+        self.__rect = value
+ 
     def create_aliens(self, offset: int) -> None:
         self.aliens_group.empty()
         for row in range(7):

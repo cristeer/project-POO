@@ -102,3 +102,36 @@ class Surfaces:
     @game_bg.setter
     def game_bg(self, value):
         self.__game_bg = value
+
+    def draw_score(self):
+        # Score
+        formatted_score = str(self.game.score).zfill(6)
+        score_surface = self.fonts.font.render(formatted_score, False, self.display.YELLOW)
+        self.display.screen.blit(self.score_text_surface, (520, 25))
+        self.display.screen.blit(score_surface, (520, 50))
+
+        # Highscore
+        self.display.screen.blit(self.highscore_text_surface, (1225, 25))
+        formatted_highscore = str(self.game.highscore).zfill(6)
+        highscore_surface = self.fonts.font.render(formatted_highscore, False, self.display.YELLOW)
+        self.display.screen.blit(highscore_surface, (1225, 50))
+
+    def draw_hud(self):
+        # Exibe o Hud
+        pygame.draw.rect(self.display.screen, self.display.YELLOW, (485, 10, 950, 1060), 2, 0)
+        pygame.draw.line(self.display.screen, self.display.YELLOW, (505, 1010), (1415, 1010), 3)
+        self.display.screen.blit(self.level_surface, (1225, 1020))
+
+        # exibe as vidas
+        x = 520
+        for life in range(self.game.spaceship.player_lives):
+            self.display.screen.blit(self.life_icon, (x, 1020))
+            x += 45
+
+    def update_background_position(self):
+        self.display.bg_scroll_y = (self.display.bg_scroll_y + self.display.bg_scroll_speed) % 1060
+
+    def draw_bg(self):
+            self.display.screen.blit(self.game_bg, (485, 10 + self.display.bg_scroll_y))
+            self.display.screen.blit(self.game_bg, (485, 10 + self.display.bg_scroll_y - 1060))
+            self.update_background_position()

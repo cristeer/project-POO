@@ -7,6 +7,7 @@ class Obstacle:
 
         self.__grid = Grid().create_grid().grid
         self.__blocks_group = pygame.sprite.Group()
+        self.__obstacles = []
 
         if x is not None and y is not None:
             for row in range(len(self.grid)):
@@ -34,14 +35,23 @@ class Obstacle:
     def blocks_group(self, value):
         self.__blocks_group = value
 
+    @property
+    def obstacles(self):
+        return self.__obstacles
+
+    @obstacles.setter
+    def obstacles(self, value):
+        self.__obstacles = value
     
     def create_obstacles(self, screen_height):
-        obstacles = []
         x = 650
 
         for i in range(4):
             obstacle = Obstacle(x, screen_height - 200)
-            obstacles.append(obstacle)
+            self.obstacles.append(obstacle)
             x += 190
             
-        return obstacles
+        return self.obstacles
+    
+    def destroy_obstacles(self):
+        self.obstacles.clear()

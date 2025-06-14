@@ -67,15 +67,15 @@ class MysteryLaser(Laser):
         self.__rect = value
 
     # Métodos
-    def destroy(self):
+    def destroy_mystery_laser(self):
         if self.rect.y + 60 > self.height or self.rect.y < 0:
             self.kill()
     
-    def laser_move(self):
+    def mystery_laser_move(self):
         self.rect.y -= self.speed
         if self.spaceship_group.sprite:
             self.rect.x = self.spaceship_group.sprite.rect.x
 
     def update(self):
-        self.laser_move()
-        self.destroy()
+        self.mystery_laser_move()
+        self.destroy_mystery_laser()

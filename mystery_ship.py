@@ -127,3 +127,8 @@ class MysteryShip(pygame.sprite.Sprite):
     def update(self) -> None:
         if self.spaceship.spaceship_group.sprite:
             self.rect.x = self.spaceship.spaceship_group.sprite.rect.x - 20
+
+    def destroy_mystery_ship(self):
+        self.mystery_ship_group.empty()
+        self.mystery_health = 3
+        self.mystery_kill = False

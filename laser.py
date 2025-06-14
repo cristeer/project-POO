@@ -54,7 +54,7 @@ class Laser(pygame.sprite.Sprite):
         self.__rect = value
 
     # Métodos:
-    def destroy(self) -> None:
+    def destroy_laser(self) -> None:
         if self.rect.y + 20 > self.height or self.rect.y < 0:
             self.kill()
     
@@ -63,4 +63,4 @@ class Laser(pygame.sprite.Sprite):
 
     def update(self) -> None:
         self.laser_move()
-        self.destroy()
+        self.destroy_laser()

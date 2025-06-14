@@ -131,41 +131,28 @@ class Game:
         self.black_hole.destroy_black_hole()
 
     def reset_game(self) -> None:
-        self.spaceship.reset()
-        self.spaceship.transformation_active = False 
-        self.spaceship.transformation_time = 0
+        # Nave/Jogador
+        self.spaceship.destroy_spaceship() # implementar destrutor
+        self.spaceship.create_spaceship()
 
-        self.spaceship.spaceship_group.empty() # implementar destrutor
-        self.spaceship.spaceship_group.add(self.spaceship)
+        # Aliens
+        self.alien.destroy_aliens() # implementar no destrutor
+        self.alien.create_aliens(self.offset)
+        
+        #Nave Misteriosa
+        self.mystery_ship.destroy_mystery_ship() #implementar no destrutor
 
-        self.alien.aliens_group.empty() # implementar no destrutor
-        self.alien.aliens_lasers_group.empty()
-        self.alien.aliens_direction = 1
-
-        self.mystery_ship.mystery_ship_group.empty() #implementar no destrutor
-        self.mystery_ship.mystery_health = 3
-        self.mystery_ship.mystery_kill = False
-
+        # Buraco Negro
         self.black_hole.destroy_black_hole()
 
-        self.spaceship.spaceship_group.empty()
-        self.spaceship.spaceship_group.add(self.spaceship)
-
-        self.alien.aliens_group.empty()
-        self.alien.aliens_lasers_group.empty()
-        self.alien.aliens_direction = 1
-
-        self.mystery_ship.mystery_ship_group.empty()
-        self.mystery_ship.mystery_health = 3
-        self.mystery_ship.mystery_kill = False
-
-        self.alien.create_aliens(self.offset)
+        # Obstaculos
         self.obstacles = self.obstacle.create_obstacles(self.screen_height)
 
-        self.game_state = True
-
+        # Reseta eventos periódicos
         pygame.time.set_timer(self.MYSTERYSHIP_SPAWN, randint(10000, 15000))
         pygame.time.set_timer(self.BLACK_HOLE_SPAWN, randint(10000, 15000))
+
+        self.game_state = True
 
     def check_for_highscore(self):
         if self.score > self.highscore:
@@ -232,13 +219,13 @@ class Game:
                     self.reset_game()
 
             if self.spaceship.transformation_active and self.mystery_ship.mystery_kill:
-                self.spaceship.super_spaceship()
+                self.spaceship.super_spaceship_activate()
                 self.mystery_ship.mystery_kill = False
 
             if self.spaceship.transformation_active:
                 current_time = pygame.time.get_ticks()
                 if current_time - self.spaceship.transformation_time >= 10000:
-                    self.spaceship.reset_transformation()
+                    self.spaceship.super_spaceship_reset()
 
             self.display.draw_game()
             pygame.display.update()

@@ -3,6 +3,7 @@ from button import Button
 
 class Settings:
     def __init__(self, display):
+        # Globais
         self.display = display
         self.screen = display.game.screen
         self.fonts = display.fonts
@@ -60,16 +61,16 @@ class Settings:
         self.screen.blit(self.display.surfaces.main_bg, (0,0))
         
         # Draw title
-        title = self.fonts.title_font.render("SETTINGS", True, self.display.YELLOW)
-        title_rect = title.get_rect(center=(960, 200))
+        title = self.fonts.menu_font.render("SETTINGS", True, self.display.YELLOW)
+        title_rect = title.get_rect(center = (960, 200))
         self.screen.blit(title, title_rect)
         
         # Draw volume levels
         game_vol = self.fonts.button_font.render(f"Game Volume: {int(self.sound.game_volume * 100)}%", True, self.display.YELLOW)
         music_vol = self.fonts.button_font.render(f"Music Volume: {int(self.sound.music_volume * 100)}%", True, self.display.YELLOW)
         
-        self.screen.blit(game_vol, game_vol.get_rect(center=(960, 300)))
-        self.screen.blit(music_vol, music_vol.get_rect(center=(960, 600)))
+        self.screen.blit(game_vol, game_vol.get_rect(center = (960, 300)))
+        self.screen.blit(music_vol, music_vol.get_rect(center = (960, 600)))
         
         # Draw buttons
         mouse_pos = pygame.mouse.get_pos()

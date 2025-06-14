@@ -1,6 +1,5 @@
 import pygame, sys
 
-from button import Button
 from fonts import Fonts
 from surfaces import Surfaces
 from settings import Settings
@@ -52,6 +51,10 @@ class Display:
             self.settings.draw_settings()
             return
         
+        if self.game.ranking.ranking_state:
+            self.game.ranking.draw_ranking()
+            return 
+        
         if self.game.game_state:
             # Fundo e sua Lógica de Scroll
             self.surfaces.draw_bg()
@@ -66,28 +69,10 @@ class Display:
 
         self.screen.blit(self.surfaces.main_bg, (0,0))
 
-        # Título
-        self.GAME_TITLE = self.fonts.title_font.render("SPACE INVADERS", True, self.YELLOW)
-        self.GAME_TITLE_RECT = self.GAME_TITLE.get_rect(center = (960, 200))
-         
-        # Botões
-        self.play_button = Button(pos = (960, 490), text_input = 'Play', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
+        self.surfaces.draw_menu()
         
-        self.settings_button = Button(pos = (960, 640), text_input = 'Settings', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
-        
-        self.ranking_button = Button(pos = (960, 790), text_input = 'Ranking', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
-
-        self.quit_button = Button(pos = (960, 940), text_input = 'Quit', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
-
         MOUSE_POS = pygame.mouse.get_pos()
 
-        # Exibe o menu
-        self.screen.blit(self.GAME_TITLE, self.GAME_TITLE_RECT)
-        
-        for button in [self.play_button, self.settings_button, self.ranking_button, self.quit_button]:
-            button.changeColor(MOUSE_POS)
-            button.update(self.screen)
-        
         for event in pygame.event.get():
             
             if event.type == pygame.QUIT:
@@ -95,17 +80,18 @@ class Display:
                 sys.exit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.play_button.checkForInput(MOUSE_POS):
+                if self.surfaces.play_button.checkForInput(MOUSE_POS):
                     self.game.reset_game()
                     return
 
-                if self.quit_button.checkForInput(MOUSE_POS):
+                if self.surfaces.quit_button.checkForInput(MOUSE_POS):
                     pygame.quit()
                     sys.exit()
 
-                if self.settings_button.checkForInput(MOUSE_POS):
+                if self.surfaces.settings_button.checkForInput(MOUSE_POS):
                     self.settings.settings_state = True
                     return
 
-                if self.ranking_button.checkForInput(MOUSE_POS):
+                if self.surfaces.ranking_button.checkForInput(MOUSE_POS):
+                    self.game.ranking.ranking_state = True
                     pass

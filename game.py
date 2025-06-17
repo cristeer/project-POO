@@ -9,7 +9,6 @@ from display import Display
 from sound import Sound
 from black_hole import BlackHole
 from save import Save
-from ranking import Ranking
 
 class Game:
     def __init__(self) -> None:
@@ -58,7 +57,6 @@ class Game:
         
         self.display = Display(self)
         self.save = Save(self)
-        self.ranking = Ranking(self)
 
     def check_for_collisions(self) -> None:
         # Colisões dos lasers do jogador
@@ -124,12 +122,6 @@ class Game:
 
     def game_over(self) -> None:
         self.game_state = False
-
-        if self.score > 0 :
-            player_name = self.ranking.get_player_name()
-            if player_name:
-                self.ranking.add_score(player_name, self.score)
-
         self.level = 1
         self.display.surfaces.level_surface = self.display.fonts.font.render(f'LEVEL {self.level:02}', False, self.display.YELLOW)
         self.spaceship.player_lives = 3 
@@ -139,28 +131,41 @@ class Game:
         self.black_hole.destroy_black_hole()
 
     def reset_game(self) -> None:
-        # Nave/Jogador
-        self.spaceship.destroy_spaceship() # implementar destrutor
-        self.spaceship.create_spaceship()
+        self.spaceship.reset()
+        self.spaceship.transformation_active = False 
+        self.spaceship.transformation_time = 0
 
-        # Aliens
-        self.alien.destroy_aliens() # implementar no destrutor
-        self.alien.create_aliens(self.offset)
-        
-        #Nave Misteriosa
-        self.mystery_ship.destroy_mystery_ship() #implementar no destrutor
+        self.spaceship.spaceship_group.empty() # implementar destrutor
+        self.spaceship.spaceship_group.add(self.spaceship)
 
-        # Buraco Negro
+        self.alien.aliens_group.empty() # implementar no destrutor
+        self.alien.aliens_lasers_group.empty()
+        self.alien.aliens_direction = 1
+
+        self.mystery_ship.mystery_ship_group.empty() #implementar no destrutor
+        self.mystery_ship.mystery_health = 3
+        self.mystery_ship.mystery_kill = False
+
         self.black_hole.destroy_black_hole()
 
-        # Obstaculos
+        self.spaceship.spaceship_group.empty()
+        self.spaceship.spaceship_group.add(self.spaceship)
+
+        self.alien.aliens_group.empty()
+        self.alien.aliens_lasers_group.empty()
+        self.alien.aliens_direction = 1
+
+        self.mystery_ship.mystery_ship_group.empty()
+        self.mystery_ship.mystery_health = 3
+        self.mystery_ship.mystery_kill = False
+
+        self.alien.create_aliens(self.offset)
         self.obstacles = self.obstacle.create_obstacles(self.screen_height)
 
-        # Reseta eventos periódicos
+        self.game_state = True
+
         pygame.time.set_timer(self.MYSTERYSHIP_SPAWN, randint(10000, 15000))
         pygame.time.set_timer(self.BLACK_HOLE_SPAWN, randint(10000, 15000))
-
-        self.game_state = True
 
     def check_for_highscore(self):
         if self.score > self.highscore:
@@ -227,13 +232,13 @@ class Game:
                     self.reset_game()
 
             if self.spaceship.transformation_active and self.mystery_ship.mystery_kill:
-                self.spaceship.super_spaceship_activate()
+                self.spaceship.super_spaceship()
                 self.mystery_ship.mystery_kill = False
 
             if self.spaceship.transformation_active:
                 current_time = pygame.time.get_ticks()
                 if current_time - self.spaceship.transformation_time >= 10000:
-                    self.spaceship.super_spaceship_reset()
+                    self.spaceship.reset_transformation()
 
             self.display.draw_game()
             pygame.display.update()

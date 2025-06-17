@@ -117,8 +117,3 @@ class Alien(pygame.sprite.Sprite):
 
     def update(self, direction: int) -> None:
         self.rect.x += direction
-
-    def destroy_aliens(self):
-        self.aliens_group.empty()
-        self.aliens_lasers_group.empty()
-        self.aliens_direction = 1

@@ -9,7 +9,6 @@ class Save:
         self.__spaceship_position = None
         self.__game_data = {}
         
-        # Initialize game data only if all required attributes exist
         self.__initialize_game_data()
 
     @property

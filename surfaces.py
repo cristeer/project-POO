@@ -1,45 +1,27 @@
 import pygame
-
 from fonts import Fonts
-from button import Button
+
 class Surfaces:
     
     def __init__(self, display, game):
-        # Globais
+        
         self.__fonts = Fonts()
         self.__display = display
         self.__game = game
 
-        # Ícones
         self.__life_icon = pygame.image.load('images/spaceship/spaceship.png')
         self.__life_icon = pygame.transform.scale(self.life_icon, (40, 25))
         
-        # Demais superfícies
         self.__game_over_surface = self.fonts.font.render('GAME OVER', False, self.display.YELLOW)
         self.__score_text_surface = self.fonts.font.render('SCORE', False, self.display.YELLOW)
         self.__highscore_text_surface = self.fonts.font.render('HIGH-SCORE', False, self.display.YELLOW)
         self.__level_surface = self.fonts.font.render(f'LEVEL {self.game.level:02}', False, self.display.YELLOW)
 
-        # Fundo do Menu
         self.__main_bg = pygame.image.load('images/bg/background.png').convert_alpha()
         self.__main_bg = pygame.transform.smoothscale(self.main_bg, (self.display.screen_width, self.display.screen_height))
 
-        # Fundo do Jogo
         self.__game_bg = pygame.image.load('images/bg/background.png').convert_alpha()
         self.__game_bg = pygame.transform.smoothscale(self.game_bg, (950, 1060))
-
-        # Título
-        self.GAME_TITLE = self.fonts.title_font.render("SPACE INVADERS", True, self.display.YELLOW)
-        self.GAME_TITLE_RECT = self.GAME_TITLE.get_rect(center = (960, 200))
-
-        # Botões
-        self.play_button = Button(pos = (960, 490), text_input = 'Play', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
-        
-        self.settings_button = Button(pos = (960, 640), text_input = 'Settings', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
-        
-        self.ranking_button = Button(pos = (960, 790), text_input = 'Ranking', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
-
-        self.quit_button = Button(pos = (960, 940), text_input = 'Quit', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
 
     @property
     def fonts(self):
@@ -120,48 +102,3 @@ class Surfaces:
     @game_bg.setter
     def game_bg(self, value):
         self.__game_bg = value
-
-    def draw_score(self):
-        # Score
-        formatted_score = str(self.game.score).zfill(6)
-        score_surface = self.fonts.font.render(formatted_score, False, self.display.YELLOW)
-        self.display.screen.blit(self.score_text_surface, (520, 25))
-        self.display.screen.blit(score_surface, (520, 50))
-
-        # Highscore
-        self.display.screen.blit(self.highscore_text_surface, (1225, 25))
-        formatted_highscore = str(self.game.highscore).zfill(6)
-        highscore_surface = self.fonts.font.render(formatted_highscore, False, self.display.YELLOW)
-        self.display.screen.blit(highscore_surface, (1225, 50))
-
-    def draw_hud(self):
-        # Exibe o Hud
-        pygame.draw.rect(self.display.screen, self.display.YELLOW, (485, 10, 950, 1060), 2, 0)
-        pygame.draw.line(self.display.screen, self.display.YELLOW, (505, 1010), (1415, 1010), 3)
-        self.display.screen.blit(self.level_surface, (1225, 1020))
-
-        # exibe as vidas
-        x = 520
-        for life in range(self.game.spaceship.player_lives):
-            self.display.screen.blit(self.life_icon, (x, 1020))
-            x += 45
-
-    def update_background_position(self):
-        self.display.bg_scroll_y = (self.display.bg_scroll_y + self.display.bg_scroll_speed) % 1060
-
-    def draw_bg(self):
-            self.display.screen.blit(self.game_bg, (485, 10 + self.display.bg_scroll_y))
-            self.display.screen.blit(self.game_bg, (485, 10 + self.display.bg_scroll_y - 1060))
-            self.update_background_position()
-
-    def draw_menu(self):
-        # Título
-        self.display.screen.blit(self.GAME_TITLE, self.GAME_TITLE_RECT)
-
-        # Posição do Mouse
-        MOUSE_POS = pygame.mouse.get_pos()
-
-        # Botões
-        for button in [self.play_button, self.settings_button, self.ranking_button, self.quit_button]:
-            button.changeColor(MOUSE_POS)
-            button.update(self.display.screen)

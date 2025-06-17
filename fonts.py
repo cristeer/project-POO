@@ -5,8 +5,7 @@ class Fonts:
     def __init__(self):
         
         self.__font = pygame.font.Font('fonts/monogram.ttf', 50)
-        self.__title_font = pygame.font.Font('fonts/monogram.ttf', 200)
-        self.__menu_font = pygame.font.Font('fonts/monogram.ttf', 120)
+        self.__title_font = pygame.font.Font('fonts/monogram.ttf', 100)
         self.__button_font = pygame.font.Font('fonts/monogram.ttf', 80)
 
     # Setters e Getters
@@ -33,11 +32,3 @@ class Fonts:
     @button_font.setter
     def button_font(self, value):
         self.__button_font = value
-
-    @property
-    def menu_font(self):
-        return self.__menu_font
-
-    @menu_font.setter
-    def menu_font(self, value):
-        self.__menu_font = value

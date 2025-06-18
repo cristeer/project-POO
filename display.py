@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, os
 
 from button import Button
 from fonts import Fonts
@@ -101,8 +101,11 @@ class Display:
         self.GAME_TITLE_RECT = self.GAME_TITLE.get_rect(center = (960, 200))
          
         # Botões
-        self.play_button = Button(pos = (960, 490), text_input = 'Play', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
-        
+        if os.path.exists('save_game.json'):
+            self.play_button = Button(pos = (960, 490), text_input = 'Continue', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
+        else:
+            self.play_button = Button(pos = (960, 490), text_input = 'Play', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
+
         self.settings_button = Button(pos = (960, 640), text_input = 'Settings', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
         
         self.ranking_button = Button(pos = (960, 790), text_input = 'Ranking', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
@@ -126,10 +129,14 @@ class Display:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.play_button.checkForInput(MOUSE_POS):
-                    self.game.reset_game()
+                    if os.path.exists('save_game.json'):
+                        self.game.save.load_game()
+                    else:
+                        self.game.reset_game()
                     return
 
                 if self.quit_button.checkForInput(MOUSE_POS):
+                    #self.game.save.save_game()
                     pygame.quit()
                     sys.exit()
 
@@ -139,3 +146,55 @@ class Display:
 
                 if self.ranking_button.checkForInput(MOUSE_POS):
                     pass
+        
+    def pause_menu(self):
+        # Desenha Semi transparência
+        overlay = pygame.Surface((self.screen_width, self.screen_height))
+        overlay.fill((0, 0, 0))
+        overlay.set_alpha(180)
+        self.screen.blit(overlay, (0, 0))
+
+        # Create pause menu buttons
+        continue_button = Button(
+            pos=(960, 490),
+            text_input='Continue',
+            text_font=self.fonts.button_font,
+            base_color="White",
+            hovering_color="#b68f40"
+        )
+        
+        back_button = Button(
+            pos=(960, 640),
+            text_input='Back to Menu',
+            text_font=self.fonts.button_font,
+            base_color="White",
+            hovering_color="#b68f40"
+        )
+
+        while True:
+            MOUSE_POS = pygame.mouse.get_pos()
+
+            # Draw buttons
+            for button in [continue_button, back_button]:
+                button.changeColor(MOUSE_POS)
+                button.update(self.screen)
+
+            # Handle events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:  # Press ESC again to continue
+                        return
+                
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if continue_button.checkForInput(MOUSE_POS):
+                        return
+                    if back_button.checkForInput(MOUSE_POS):
+                        self.game.save.save_game()
+                        return 'menu'
+                        
+
+            pygame.display.flip()

@@ -1,4 +1,4 @@
-import pygame, json, sys
+import pygame, json, sys, os
 from random import randint
 
 from spaceship import Spaceship
@@ -129,6 +129,8 @@ class Game:
         self.spaceship.transformation_time = 0
         self.score = 0
         self.black_hole.destroy_black_hole()
+        if os.path.exists('save_game.json'):
+            os.remove('save_game.json')
 
     def reset_game(self) -> None:
         self.spaceship.reset()
@@ -212,7 +214,14 @@ class Game:
                     
                 if keys[pygame.K_l] and self.game_state == False: 
                     if self.save.load_game():
-                        self.game_state = True #concertar depois pra ser acessado no menu 
+                        self.game_state = True #concertar depois pra ser acessado no menu
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE and self.game_state:
+                    event_type = self.display.pause_menu()
+                
+                    if event_type == 'menu':
+                        self.game_state = False
 
             # Atualizar
             if self.game_state == True:

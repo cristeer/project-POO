@@ -8,8 +8,6 @@ class Save:
         self.__mystery_ship_position = None
         self.__spaceship_position = None
         self.__game_data = {}
-        
-        self.__initialize_game_data()
 
     @property
     def game(self):
@@ -43,37 +41,32 @@ class Save:
     def spaceship_position(self, value):
         self.__spaceship_position = value
 
-    def __initialize_game_data(self):
-        """Initialize game data with safe attribute checking"""
-        if not all(hasattr(self.game, attr) for attr in ['spaceship', 'mystery_ship', 'level', 'score', 'highscore']):
-            return
-
-        # Update positions if groups exist
-        if hasattr(self.game.mystery_ship, 'mystery_ship_group') and self.game.mystery_ship.mystery_ship_group:
-            self.mystery_ship_position = list(self.game.mystery_ship.mystery_ship_group.sprite.rect.topleft)
-
-        if hasattr(self.game.spaceship, 'spaceship_group') and self.game.spaceship.spaceship_group:
+    def inicializar_game_data(self):
+        if self.game.spaceship.spaceship_group:
             self.spaceship_position = list(self.game.spaceship.spaceship_group.sprite.rect.topleft)
+
+        #if self.game.mystery_ship.mystery_ship_group:
+        #    self.mystery_ship_position = list(self.game.mystery_ship.mystery_ship_group.sprite.rect.topleft)
+#
 
         # Create game data dictionary
         self.game_data = {
             'level': self.game.level,
             'score': self.game.score,
             'highscore': self.game.highscore,
-            'lives': getattr(self.game.spaceship, 'player_lives', 3),
-            'transformation_active': getattr(self.game.spaceship, 'transformation_active', False),
-            'transformation_time': getattr(self.game.spaceship, 'transformation_time', 0),
-            'mystery_health': getattr(self.game.mystery_ship, 'mystery_health', 3),
-            'mystery_kill': getattr(self.game.mystery_ship, 'mystery_kill', False),
-            'mystery_active': len(getattr(self.game.mystery_ship, 'mystery_ship_group', [])) > 0,
-            'mystery_ship_position': self.mystery_ship_position,
+            'lives': self.game.spaceship.player_lives,
+            #'transformation_active': self.game.spaceship.transformation_active,
+            #'transformation_time': self.game.spaceship.transformation_time,
+            #'mystery_health': self.game.mystery_ship.mystery_health,
+            #'mystery_kill': self.game.mystery_ship.mystery_kill,
+            #'mystery_active': len(self.game.mystery_ship.mystery_ship_group) > 0,
+            #'mystery_ship_position': self.mystery_ship_position,
             'spaceship_position': self.spaceship_position
-            #'black_hole_position': black_hole_position
         }
 
     def save_game(self) -> None:
         # Refresh game data before saving
-        self.__initialize_game_data()
+        self.inicializar_game_data()
         
         # Save to file
         with open('save_game.json', 'w') as file:
@@ -93,14 +86,16 @@ class Save:
                 
                 # Load player state
                 self.game.spaceship.player_lives = self.game_data['lives']
-                self.game.spaceship.transformation_active = self.game_data['transformation_active']
-                self.game.spaceship.transformation_time = self.game_data['transformation_time']
+                #self.game.spaceship.transformation_active = self.game_data['transformation_active']
+                #self.game.spaceship.transformation_time = self.game_data['transformation_time']
                 
                 # Load mystery ship state
-                self.game.mystery_ship.mystery_health = self.game_data['mystery_health']
-                self.game.mystery_ship.mystery_kill = self.game_data['mystery_kill']
+                #self.game.mystery_ship.mystery_health = self.game_data['mystery_health']
+                #self.game.mystery_ship.mystery_kill = self.game_data['mystery_kill']
 
                 # Reset and recreate game objects
+                self.game.mystery_ship.mystery_ship_lasers_group.empty()
+                self.game.spaceship.laser_group.empty()
                 self.game.alien.aliens_group.empty()
                 self.game.alien.aliens_lasers_group.empty()
                 self.game.alien.create_aliens(self.game.offset)
@@ -113,11 +108,11 @@ class Save:
                     self.game.spaceship.spaceship_group.sprite.rect.topleft = self.game_data['spaceship_position']
 
                 # Restore mystery ship if active
-                if self.game_data['mystery_active'] and self.game_data.get('mystery_ship_position'):
-                    self.game.mystery_ship.mystery_ship_group.empty()
-                    self.game.mystery_ship.create_mystery_ship()
-                    self.game.mystery_ship.mystery_ship_group.sprite.rect.topleft = self.game_data['mystery_ship_position']
-
+                #if self.game_data['mystery_active'] and self.game_data.get('mystery_ship_position'):
+                #    self.game.mystery_ship.mystery_ship_group.empty()
+                #    self.game.mystery_ship.create_mystery_ship()
+                #    self.game.mystery_ship.mystery_ship_group.sprite.rect.topleft = self.game_data['mystery_ship_position']
+#
                 self.game.game_state = True
                 return True
                 

@@ -10,8 +10,13 @@ class Sound:
         self.__laser_sound = pygame.mixer.Sound('music/laser.ogg')
         self.__bg_music = pygame.mixer.Sound('music/explosion.ogg')
 
-        self.__game_volume = 0
-        self.__music_volume = 0
+        self.__game_volume = 0.5
+        self.__music_volume = 0.5
+
+        self.laser_sound.set_volume(self.game_volume)
+        self.mystery_sound.set_volume(self.game_volume)
+        self.explosion_sound.set_volume(self.game_volume)
+
 
     # Setters e Getters
     @property

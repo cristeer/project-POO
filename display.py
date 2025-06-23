@@ -136,7 +136,6 @@ class Display:
                     return
 
                 if self.quit_button.checkForInput(MOUSE_POS):
-                    #self.game.save.save_game()
                     pygame.quit()
                     sys.exit()
 
@@ -145,7 +144,7 @@ class Display:
                     return
 
                 if self.ranking_button.checkForInput(MOUSE_POS):
-                    pass
+                    self.draw_ranking()
         
     def pause_menu(self):
         # Desenha Semi transparência
@@ -154,7 +153,7 @@ class Display:
         overlay.set_alpha(180)
         self.screen.blit(overlay, (0, 0))
 
-        # Create pause menu buttons
+        # Ceate pause menu buttons
         continue_button = Button(
             pos=(960, 490),
             text_input='Continue',
@@ -162,7 +161,7 @@ class Display:
             base_color="White",
             hovering_color="#b68f40"
         )
-        
+    
         back_button = Button(
             pos=(960, 640),
             text_input='Back to Menu',
@@ -171,6 +170,7 @@ class Display:
             hovering_color="#b68f40"
         )
 
+        
         while True:
             MOUSE_POS = pygame.mouse.get_pos()
 
@@ -195,6 +195,87 @@ class Display:
                     if back_button.checkForInput(MOUSE_POS):
                         self.game.save.save_game()
                         return 'menu'
-                        
 
             pygame.display.flip()
+
+    def draw_ranking(self):
+        while True:
+            self.screen.fill(self.GREY)
+
+            ranking_title = self.fonts.title_font.render("______RANKING______", True, self.YELLOW)
+            ranking_title_rect = ranking_title.get_rect(center = (960, 200))
+            self.screen.blit(ranking_title, ranking_title_rect)
+
+            scores = self.game.ranking.get_ranking()
+            y_pos = 350
+
+            for i, score_entry in enumerate(scores, 1):
+                score_text = self.fonts.button_font.render (f"#{i} {score_entry['name']}: {score_entry['score']:06d}", True, self.YELLOW)
+
+                score_rect = score_text.get_rect(center=(960, y_pos))
+
+                self.screen.blit(score_text, score_rect)
+                y_pos += 60
+
+            # Botão de voltar
+            back_button = Button(
+                pos=(960, y_pos + 50),
+                text_input='Back to Menu',
+                text_font=self.fonts.button_font,
+                base_color="White",
+                hovering_color="#b68f40"
+            )
+            MOUSE_POS = pygame.mouse.get_pos()
+            back_button.changeColor(MOUSE_POS)
+            back_button.update(self.screen)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if back_button.checkForInput(MOUSE_POS):
+                        return
+            
+            pygame.display.flip()
+            self.game.clock.tick(60)
+
+    def get_player_name(self):
+        name = ''
+        input_active = True
+
+        while input_active:
+            self.screen.blit(self.surfaces.main_bg, (0,0))
+
+            # Título
+            title = self.fonts.title_font.render("Enter Your Name", True, self.YELLOW)
+            title_rect = title.get_rect(center = (960, 300))
+            self.screen.blit(title, title_rect)
+
+            # Campo de entrada
+            input_box = pygame.Rect(710, 400, 500, 60)
+            txt_surface = self.fonts.button_font.render(name, True, self.YELLOW)
+            self.screen.blit(txt_surface, (input_box.x + 20, input_box.y - 5))
+            pygame.draw.rect(self.screen, self.YELLOW, input_box, 2)
+
+            pygame.display.flip()
+            #self.game.clock.tick(60)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN and name.strip():
+                        return name
+                    
+                    elif event.key == pygame.K_BACKSPACE:
+                        name = name[:-1]
+
+                    else:
+                        if len(name) < 10 and event.unicode.isalnum():
+                            name += event.unicode
+
+        

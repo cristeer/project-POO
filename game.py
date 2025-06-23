@@ -9,6 +9,7 @@ from display import Display
 from sound import Sound
 from black_hole import BlackHole
 from save import Save
+from ranking import Ranking
 
 class Game:
     def __init__(self) -> None:
@@ -57,6 +58,7 @@ class Game:
         
         self.display = Display(self)
         self.save = Save(self)
+        self.ranking = Ranking()
 
     def check_for_collisions(self) -> None:
         # Colisões dos lasers do jogador
@@ -121,6 +123,12 @@ class Game:
                     laser_sprite.kill()
 
     def game_over(self) -> None:
+        # Salvar a pontuação atual antes de resetar (Modificado pelo Luiz)
+        if self.score > 0:
+            player_name = self.display.get_player_name()
+            self.ranking.add_score(player_name, self.score)
+
+        # Resetar o jogo
         self.game_state = False
         self.level = 1
         self.display.surfaces.level_surface = self.display.fonts.font.render(f'LEVEL {self.level:02}', False, self.display.YELLOW)
@@ -128,7 +136,8 @@ class Game:
         self.spaceship.transformation_active = False
         self.spaceship.transformation_time = 0
         self.score = 0
-        self.black_hole.destroy_black_hole()
+        self.black_hole.destroy_black_hole()       
+
         if os.path.exists('save_game.json'):
             os.remove('save_game.json')
 

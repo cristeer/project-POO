@@ -25,6 +25,79 @@ class Display:
         # Scroll control
         self.bg_scroll_y = 0
         self.bg_scroll_speed = 1
+         
+        # Botões
+        self.play_button = Button(
+                pos = (960, 490),
+                text_input = '',
+                text_font = self.fonts.button_font,
+                base_color = "White",
+                hovering_color = "#b68f40"
+            )
+
+        self.settings_button = Button(
+            pos = (960, 640),
+            text_input = 'Settings',
+            text_font = self.fonts.button_font,
+            base_color = "White", 
+            hovering_color = "#b68f40"
+        )
+    
+        self.ranking_button = Button(
+            pos = (960, 790),
+            text_input = 'Ranking', 
+            text_font = self.fonts.button_font,
+            base_color = "White",
+            hovering_color = "#b68f40"
+        )
+
+        self.quit_button = Button(
+            pos = (960, 940),
+            text_input = 'Quit',
+            text_font = self.fonts.button_font,
+            base_color = "White",
+            hovering_color = "#b68f40"
+        )
+
+        self.continue_button = Button(
+            pos=(960, 490),
+            text_input='Continue',
+            text_font=self.fonts.button_font,
+            base_color="White",
+            hovering_color="#b68f40"
+        )
+        self.back_button_pause = Button(
+            pos=(960, 640),
+            text_input='Back to Menu',
+            text_font=self.fonts.button_font,
+            base_color="White",
+            hovering_color="#b68f40"
+        )
+        self.back_button_ranking = Button(
+            pos=(960, 1000),
+            text_input='Back to Menu',
+            text_font=self.fonts.button_font,
+            base_color="White",
+            hovering_color="#b68f40"
+        )
+
+    def update_menu_buttons(self):
+        if os.path.exists('save_game.json'):
+            self.play_button = Button(
+                pos = (960, 490),
+                text_input = 'Continue',
+                text_font = self.fonts.button_font,
+                base_color = "White",
+                hovering_color = "#b68f40"
+            )
+        else:
+            self.play_button = Button(
+                pos = (960, 490),
+                text_input = 'Play',
+                text_font = self.fonts.button_font,
+                base_color = "White",
+                hovering_color = "#b68f40"
+            )
 
     def update_background_position(self):
         self.bg_scroll_y = (self.bg_scroll_y + self.bg_scroll_speed) % 1060
@@ -71,9 +144,10 @@ class Display:
 
 
     def draw_game(self):
-
+        
         self.screen.fill(self.GREY)
-
+        self.update_menu_buttons()
+        
         if self.settings.settings_state:
             self.settings.draw_settings()
             return
@@ -81,7 +155,7 @@ class Display:
         if self.game.game_state:
             self.update_background_position()
             
-            # Draw background with vertical scroll
+            # Scroll Vertical
             self.screen.blit(self.surfaces.game_bg, (485, 10 + self.bg_scroll_y))
             self.screen.blit(self.surfaces.game_bg, (485, 10 + self.bg_scroll_y - 1060))
             
@@ -99,18 +173,6 @@ class Display:
         # Título
         self.GAME_TITLE = self.fonts.title_font.render("SPACE INVADERS", True, self.YELLOW)
         self.GAME_TITLE_RECT = self.GAME_TITLE.get_rect(center = (960, 200))
-         
-        # Botões
-        if os.path.exists('save_game.json'):
-            self.play_button = Button(pos = (960, 490), text_input = 'Continue', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
-        else:
-            self.play_button = Button(pos = (960, 490), text_input = 'Play', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
-
-        self.settings_button = Button(pos = (960, 640), text_input = 'Settings', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
-        
-        self.ranking_button = Button(pos = (960, 790), text_input = 'Ranking', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
-
-        self.quit_button = Button(pos = (960, 940), text_input = 'Quit', text_font = self.fonts.button_font,base_color = "White", hovering_color = "#b68f40")
 
         MOUSE_POS = pygame.mouse.get_pos()
 
@@ -118,7 +180,7 @@ class Display:
         self.screen.blit(self.GAME_TITLE, self.GAME_TITLE_RECT)
         
         for button in [self.play_button, self.settings_button, self.ranking_button, self.quit_button]:
-            button.changeColor(MOUSE_POS)
+            button.change_color(MOUSE_POS)
             button.update(self.screen)
         
         for event in pygame.event.get():
@@ -128,24 +190,24 @@ class Display:
                 sys.exit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.play_button.checkForInput(MOUSE_POS):
+                if self.play_button.check_for_input(MOUSE_POS):
                     if os.path.exists('save_game.json'):
                         self.game.save.load_game()
                     else:
                         self.game.reset_game()
                     return
 
-                if self.quit_button.checkForInput(MOUSE_POS):
+                if self.quit_button.check_for_input(MOUSE_POS):
                     pygame.quit()
                     sys.exit()
 
-                if self.settings_button.checkForInput(MOUSE_POS):
+                if self.settings_button.check_for_input(MOUSE_POS):
                     self.settings.settings_state = True
                     return
 
-                if self.ranking_button.checkForInput(MOUSE_POS):
+                if self.ranking_button.check_for_input(MOUSE_POS):
                     self.draw_ranking()
-        
+
     def pause_menu(self, events):
         # Desenha Semi transparência
         overlay = pygame.Surface((self.screen_width, self.screen_height))
@@ -153,28 +215,12 @@ class Display:
         overlay.set_alpha(180)
         self.screen.blit(overlay, (0, 0))
 
-        continue_button = Button(
-            pos=(960, 490),
-            text_input='Continue',
-            text_font=self.fonts.button_font,
-            base_color="White",
-            hovering_color="#b68f40"
-        )
-        back_button = Button(
-            pos=(960, 640),
-            text_input='Back to Menu',
-            text_font=self.fonts.button_font,
-            base_color="White",
-            hovering_color="#b68f40"
-        )
-
         while True:
-            # Get new events for the next loop
             events = pygame.event.get()
             
             MOUSE_POS = pygame.mouse.get_pos()
-            for button in [continue_button, back_button]:
-                button.changeColor(MOUSE_POS)
+            for button in [self.continue_button, self.back_button_pause]:
+                button.change_color(MOUSE_POS)
                 button.update(self.screen)
 
             for event in events:
@@ -185,9 +231,9 @@ class Display:
                     if event.key == pygame.K_ESCAPE:
                         return 'pause'
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if continue_button.checkForInput(MOUSE_POS):
+                    if self.continue_button.check_for_input(MOUSE_POS):
                         return 'pause'
-                    if back_button.checkForInput(MOUSE_POS):
+                    if self.back_button_pause.check_for_input(MOUSE_POS):
                         self.game.save.save_game()
                         return 'menu'
 
@@ -209,22 +255,14 @@ class Display:
             for i, score_entry in enumerate(scores, 1):
                 score_text = self.fonts.button_font.render (f"#{i} {score_entry['name']}: {score_entry['score']:06d}", True, self.YELLOW)
 
-                score_rect = score_text.get_rect(center=(960, y_pos))
+                score_rect = score_text.get_rect(center = (960, y_pos))
 
                 self.screen.blit(score_text, score_rect)
                 y_pos += 60
 
-            # Botão de voltar
-            back_button = Button(
-                pos=(960, y_pos + 50),
-                text_input='Back to Menu',
-                text_font=self.fonts.button_font,
-                base_color="White",
-                hovering_color="#b68f40"
-            )
             MOUSE_POS = pygame.mouse.get_pos()
-            back_button.changeColor(MOUSE_POS)
-            back_button.update(self.screen)
+            self.back_button_ranking.change_color(MOUSE_POS)
+            self.back_button_ranking.update(self.screen)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -232,12 +270,11 @@ class Display:
                     sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if back_button.checkForInput(MOUSE_POS):
+                    if self.back_button_ranking.check_for_input(MOUSE_POS):
                         return
-            
+                    
             pygame.display.flip()
             self.game.clock.tick(60)
-
     def get_player_name(self):
         name = ''
         input_active = True

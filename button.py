@@ -80,10 +80,10 @@ class Button():
 	def update(self, screen):
 		screen.blit(self.text, self.rect)
 
-	def checkForInput(self, position):
+	def check_for_input(self, position):
 		return self.rect.collidepoint(position)
 
-	def changeColor(self, position):
+	def change_color(self, position):
 		if self.rect.collidepoint(position):
 			self.text = self.font.render(self.text_input, True, self.hovering_color)
 		else:

@@ -45,22 +45,12 @@ class Save:
         if self.game.spaceship.spaceship_group:
             self.spaceship_position = list(self.game.spaceship.spaceship_group.sprite.rect.topleft)
 
-        #if self.game.mystery_ship.mystery_ship_group:
-        #    self.mystery_ship_position = list(self.game.mystery_ship.mystery_ship_group.sprite.rect.topleft)
-#
-
         # Create game data dictionary
         self.game_data = {
             'level': self.game.level,
             'score': self.game.score,
             'highscore': self.game.highscore,
             'lives': self.game.spaceship.player_lives,
-            #'transformation_active': self.game.spaceship.transformation_active,
-            #'transformation_time': self.game.spaceship.transformation_time,
-            #'mystery_health': self.game.mystery_ship.mystery_health,
-            #'mystery_kill': self.game.mystery_ship.mystery_kill,
-            #'mystery_active': len(self.game.mystery_ship.mystery_ship_group) > 0,
-            #'mystery_ship_position': self.mystery_ship_position,
             'spaceship_position': self.spaceship_position
         }
 
@@ -86,12 +76,6 @@ class Save:
                 
                 # Load player state
                 self.game.spaceship.player_lives = self.game_data['lives']
-                #self.game.spaceship.transformation_active = self.game_data['transformation_active']
-                #self.game.spaceship.transformation_time = self.game_data['transformation_time']
-                
-                # Load mystery ship state
-                #self.game.mystery_ship.mystery_health = self.game_data['mystery_health']
-                #self.game.mystery_ship.mystery_kill = self.game_data['mystery_kill']
 
                 # Reset and recreate game objects
                 self.game.mystery_ship.mystery_ship_lasers_group.empty()
@@ -107,12 +91,6 @@ class Save:
                 if self.game_data.get('spaceship_position'):
                     self.game.spaceship.spaceship_group.sprite.rect.topleft = self.game_data['spaceship_position']
 
-                # Restore mystery ship if active
-                #if self.game_data['mystery_active'] and self.game_data.get('mystery_ship_position'):
-                #    self.game.mystery_ship.mystery_ship_group.empty()
-                #    self.game.mystery_ship.create_mystery_ship()
-                #    self.game.mystery_ship.mystery_ship_group.sprite.rect.topleft = self.game_data['mystery_ship_position']
-#
                 self.game.game_state = True
                 return True
                 

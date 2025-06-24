@@ -59,7 +59,7 @@ class Game:
         self.__display = Display(self)
         self.__save = Save(self)
         self.__ranking = Ranking()
-
+        #self.events = pygame.event.get()
 
     @property
     def sound(self):
@@ -363,8 +363,8 @@ class Game:
 
     def run_game(self) -> None:
         while True:
-            events = pygame.event.get()
-            for event in events:
+            self.events = pygame.event.get()
+            for event in self.events:
                 if event.type == pygame.QUIT:
                     self.save.save_game()
                     pygame.quit()
@@ -390,7 +390,7 @@ class Game:
                     
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE and self.game_state:
-                        event_type = self.display.pause_menu(events)
+                        event_type = self.display.pause_menu(self.events)
                         if event_type == 'menu':
                             self.game_state = False
                         if event_type == 'pause':

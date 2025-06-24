@@ -97,14 +97,14 @@ class Alien(pygame.sprite.Sprite):
         for alien in self.aliens_group:
             if alien.rect.right >= (1415 - offset):
                 self.aliens_direction = -1
-                self._move_aliens_down_(2)
+                self.__move_aliens_down_(2)
                 break
             elif alien.rect.left <= (485 + offset):
                 self.aliens_direction = 1
-                self._move_aliens_down_(2)
+                self.__move_aliens_down_(2)
                 break
     
-    def _move_aliens_down_(self, distance: int) -> None:
+    def __move_aliens_down_(self, distance: int) -> None:
         if self.aliens_group:
             for alien in self.aliens_group:
                 alien.rect.y += distance

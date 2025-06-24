@@ -3,7 +3,7 @@ from laser import Laser
 from sound import Sound
 
 class Spaceship(pygame.sprite.Sprite):
-    def __init__(self, width: int, height: int, offset: int, position=None) -> None:
+    def __init__(self, width: int, height: int, offset: int, sound = None, position = None) -> None:
         super().__init__()
 
         # Globais
@@ -29,7 +29,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.__laser_delay = 300
         self.__laser_time = 0
         self.__laser_group = pygame.sprite.Group()
-        self.__laser_sound = Sound().laser_sound
+        self.__laser_sound = sound.laser_sound
 
         # Super
         self.__transformation_active = False
@@ -183,10 +183,7 @@ class Spaceship(pygame.sprite.Sprite):
             laser = Laser(self.rect.center, 5, self.height)
             self.laser_group.add(laser)
             self.laser_time = pygame.time.get_ticks()
-            try:
-                self.laser_sound.play()
-            except:
-                pass  # Ignore se não conseguir tocar o som
+            self.laser_sound.play()
 
     def constrains(self) -> None:
         if self.rect.right > (1415 - self.offset):

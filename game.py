@@ -15,50 +15,235 @@ class Game:
     def __init__(self) -> None:
         pygame.init()
         
-        self.sound = Sound()
+        self.__sound = Sound()
         self.sound.loop_music()
 
         # Variáveis da Lógica do Jogo
-        self.game_state = False
-        self.level = 1
-        self.score = 0
-        self.highscore = 0
+        self.__game_state = False
+        self.__level = 1
+        self.__score = 0
+        self.__highscore = 0
         self.load_highscore()
-        self.clock = pygame.time.Clock()
+        self.__clock = pygame.time.Clock()
 
         # Configurações da tela
-        self.screen_width = pygame.display.Info().current_w
-        self.screen_height = pygame.display.Info().current_h
-        self.offset = 50
+        self.__screen_width = pygame.display.Info().current_w
+        self.__screen_height = pygame.display.Info().current_h
+        self.__offset = 50
 
         # Setup
-        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height), pygame.FULLSCREEN)
+        self.__screen = pygame.display.set_mode((self.screen_width, self.screen_height), pygame.FULLSCREEN)
         pygame.display.set_caption('Space Invaders')
         
         # Eventos Periódicos
-        self.SHOOT_LASER = pygame.USEREVENT + 1
+        self.__SHOOT_LASER = pygame.USEREVENT + 1
         pygame.time.set_timer(self.SHOOT_LASER, 300)
         
-        self.MYSTERYSHIP_SPAWN = pygame.USEREVENT + 2
+        self.__MYSTERYSHIP_SPAWN = pygame.USEREVENT + 2
         pygame.time.set_timer(self.MYSTERYSHIP_SPAWN, randint(10000, 15000))
 
-        self.SHOOT_MYSTERY_LASER = pygame.USEREVENT + 3
+        self.__SHOOT_MYSTERY_LASER = pygame.USEREVENT + 3
         pygame.time.set_timer(self.SHOOT_MYSTERY_LASER, 2000)
 
-        self.BLACK_HOLE_SPAWN = pygame.USEREVENT + 4
+        self.__BLACK_HOLE_SPAWN = pygame.USEREVENT + 4
         pygame.time.set_timer(self.BLACK_HOLE_SPAWN, randint(10000, 15000))
 
         # Objetos
-        self.spaceship = Spaceship(self.screen_width, self.screen_height, self.offset)
-        self.mystery_ship = MysteryShip(self.screen_width, self.screen_height, self.offset, self.spaceship)
-        self.alien = Alien(self.offset)
-        self.obstacle = Obstacle()
-        self.obstacles = []
-        self.black_hole = BlackHole(self.spaceship, x = 400, y = 750, offset = 50) #corrigir, não está dinamizado 
+        self.__spaceship = Spaceship(self.screen_width, self.screen_height, self.offset, self.sound)
+        self.__mystery_ship = MysteryShip(self.screen_width, self.screen_height, self.offset, self.spaceship, self.sound)
+        self.__alien = Alien(self.offset)
+        self.__obstacle = Obstacle()
+        self.__obstacles = []
+        self.__black_hole = BlackHole(self.spaceship, x = 400, y = 750, offset = 50) #corrigir, não está dinamizado 
         
-        self.display = Display(self)
-        self.save = Save(self)
-        self.ranking = Ranking()
+        self.__display = Display(self)
+        self.__save = Save(self)
+        self.__ranking = Ranking()
+
+
+    @property
+    def sound(self):
+        return self.__sound
+
+    @sound.setter
+    def sound(self, value):
+        self.__sound = value
+
+    @property
+    def game_state(self):
+        return self.__game_state
+
+    @game_state.setter
+    def game_state(self, value):
+        self.__game_state = value
+
+    @property
+    def level(self):
+        return self.__level
+
+    @level.setter
+    def level(self, value):
+        self.__level = value
+
+    @property
+    def score(self):
+        return self.__score
+
+    @score.setter
+    def score(self, value):
+        self.__score = value
+
+    @property
+    def highscore(self):
+        return self.__highscore
+
+    @highscore.setter
+    def highscore(self, value):
+        self.__highscore = value
+
+    @property
+    def clock(self):
+        return self.__clock
+
+    @clock.setter
+    def clock(self, value):
+        self.__clock = value
+
+    @property
+    def screen_width(self):
+        return self.__screen_width
+
+    @screen_width.setter
+    def screen_width(self, value):
+        self.__screen_width = value
+
+    @property
+    def screen_height(self):
+        return self.__screen_height
+
+    @screen_height.setter
+    def screen_height(self, value):
+        self.__screen_height = value
+
+    @property
+    def offset(self):
+        return self.__offset
+
+    @offset.setter
+    def offset(self, value):
+        self.__offset = value
+
+    @property
+    def screen(self):
+        return self.__screen
+
+    @screen.setter
+    def screen(self, value):
+        self.__screen = value
+
+    @property
+    def SHOOT_LASER(self):
+        return self.__SHOOT_LASER
+
+    @SHOOT_LASER.setter
+    def SHOOT_LASER(self, value):
+        self.__SHOOT_LASER = value
+
+    @property
+    def MYSTERYSHIP_SPAWN(self):
+        return self.__MYSTERYSHIP_SPAWN
+
+    @MYSTERYSHIP_SPAWN.setter
+    def MYSTERYSHIP_SPAWN(self, value):
+        self.__MYSTERYSHIP_SPAWN = value
+
+    @property
+    def SHOOT_MYSTERY_LASER(self):
+        return self.__SHOOT_MYSTERY_LASER
+
+    @SHOOT_MYSTERY_LASER.setter
+    def SHOOT_MYSTERY_LASER(self, value):
+        self.__SHOOT_MYSTERY_LASER = value
+
+    @property
+    def BLACK_HOLE_SPAWN(self):
+        return self.__BLACK_HOLE_SPAWN
+
+    @BLACK_HOLE_SPAWN.setter
+    def BLACK_HOLE_SPAWN(self, value):
+        self.__BLACK_HOLE_SPAWN = value
+
+    @property
+    def spaceship(self):
+        return self.__spaceship
+
+    @spaceship.setter
+    def spaceship(self, value):
+        self.__spaceship = value
+
+    @property
+    def mystery_ship(self):
+        return self.__mystery_ship
+
+    @mystery_ship.setter
+    def mystery_ship(self, value):
+        self.__mystery_ship = value
+
+    @property
+    def alien(self):
+        return self.__alien
+
+    @alien.setter
+    def alien(self, value):
+        self.__alien = value
+
+    @property
+    def obstacle(self):
+        return self.__obstacle
+
+    @obstacle.setter
+    def obstacle(self, value):
+        self.__obstacle = value
+
+    @property
+    def obstacles(self):
+        return self.__obstacles
+
+    @obstacles.setter
+    def obstacles(self, value):
+        self.__obstacles = value
+
+    @property
+    def black_hole(self):
+        return self.__black_hole
+
+    @black_hole.setter
+    def black_hole(self, value):
+        self.__black_hole = value
+
+    @property
+    def display(self):
+        return self.__display
+
+    @display.setter
+    def display(self, value):
+        self.__display = value
+
+    @property
+    def save(self):
+        return self.__save
+
+    @save.setter
+    def save(self, value):
+        self.__save = value
+
+    @property
+    def ranking(self):
+        return self.__ranking
+
+    @ranking.setter
+    def ranking(self, value):
+        self.__ranking = value
 
     def check_for_collisions(self) -> None:
         # Colisões dos lasers do jogador

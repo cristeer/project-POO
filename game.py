@@ -327,33 +327,14 @@ class Game:
             os.remove('save_game.json')
 
     def reset_game(self) -> None:
-        self.spaceship.reset()
-        self.spaceship.transformation_active = False 
-        self.spaceship.transformation_time = 0
+        self.spaceship.destroy_spaceship()
 
-        self.spaceship.spaceship_group.empty() # implementar destrutor
-        self.spaceship.spaceship_group.add(self.spaceship)
+        self.alien.destroy_aliens()
 
-        self.alien.aliens_group.empty() # implementar no destrutor
-        self.alien.aliens_lasers_group.empty()
-        self.alien.aliens_direction = 1
-
-        self.mystery_ship.mystery_ship_group.empty() #implementar no destrutor
-        self.mystery_ship.mystery_health = 3
-        self.mystery_ship.mystery_kill = False
+        self.mystery_ship.destroy_mystery_ship()
 
         self.black_hole.destroy_black_hole()
 
-        self.spaceship.spaceship_group.empty()
-        self.spaceship.spaceship_group.add(self.spaceship)
-
-        self.alien.aliens_group.empty()
-        self.alien.aliens_lasers_group.empty()
-        self.alien.aliens_direction = 1
-
-        self.mystery_ship.mystery_ship_group.empty()
-        self.mystery_ship.mystery_health = 3
-        self.mystery_ship.mystery_kill = False
 
         self.alien.create_aliens(self.offset)
         self.obstacles = self.obstacle.create_obstacles(self.screen_height)
@@ -382,7 +363,8 @@ class Game:
 
     def run_game(self) -> None:
         while True:
-            for event in pygame.event.get():
+            events = pygame.event.get()
+            for event in events:
                 if event.type == pygame.QUIT:
                     self.save.save_game()
                     pygame.quit()
@@ -406,16 +388,13 @@ class Game:
                 if keys[pygame.K_SPACE] and self.game_state == False:
                     self.reset_game()
                     
-                if keys[pygame.K_l] and self.game_state == False: 
-                    if self.save.load_game():
-                        self.game_state = True #concertar depois pra ser acessado no menu
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE and self.game_state:
-                    event_type = self.display.pause_menu()
-                
-                    if event_type == 'menu':
-                        self.game_state = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE and self.game_state:
+                        event_type = self.display.pause_menu(events)
+                        if event_type == 'menu':
+                            self.game_state = False
+                        if event_type == 'pause':
+                            self.game_state = True
 
             # Atualizar
             if self.game_state == True:

@@ -224,3 +224,11 @@ class Spaceship(pygame.sprite.Sprite):
     def reset(self) -> None:
         self.rect = self.image.get_rect(midbottom = (self.width/2, self.height - 100))
         self.laser_group.empty()
+
+    def destroy_spaceship(self):
+        self.reset()
+        self.transformation_active = False 
+        self.transformation_time = 0
+
+        self.spaceship_group.empty()
+        self.spaceship_group.add(self)

@@ -146,14 +146,13 @@ class Display:
                 if self.ranking_button.checkForInput(MOUSE_POS):
                     self.draw_ranking()
         
-    def pause_menu(self):
+    def pause_menu(self, events):
         # Desenha Semi transparência
         overlay = pygame.Surface((self.screen_width, self.screen_height))
         overlay.fill((0, 0, 0))
         overlay.set_alpha(180)
         self.screen.blit(overlay, (0, 0))
 
-        # Ceate pause menu buttons
         continue_button = Button(
             pos=(960, 490),
             text_input='Continue',
@@ -161,7 +160,6 @@ class Display:
             base_color="White",
             hovering_color="#b68f40"
         )
-    
         back_button = Button(
             pos=(960, 640),
             text_input='Back to Menu',
@@ -170,33 +168,32 @@ class Display:
             hovering_color="#b68f40"
         )
 
-        
         while True:
+            # Get new events for the next loop
+            events = pygame.event.get()
+            
             MOUSE_POS = pygame.mouse.get_pos()
-
-            # Draw buttons
             for button in [continue_button, back_button]:
                 button.changeColor(MOUSE_POS)
                 button.update(self.screen)
 
-            # Handle events
-            for event in pygame.event.get():
+            for event in events:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:  # Press ESC again to continue
-                        return
-                
+                    if event.key == pygame.K_ESCAPE:
+                        return 'pause'
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if continue_button.checkForInput(MOUSE_POS):
-                        return
+                        return 'pause'
                     if back_button.checkForInput(MOUSE_POS):
                         self.game.save.save_game()
                         return 'menu'
 
             pygame.display.flip()
+            self.game.clock.tick(60)
+
 
     def draw_ranking(self):
         while True:
@@ -278,4 +275,3 @@ class Display:
                         if len(name) < 10 and event.unicode.isalnum():
                             name += event.unicode
 
-        

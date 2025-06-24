@@ -23,6 +23,10 @@ class Surfaces:
         self.__game_bg = pygame.image.load('images/bg/background.png').convert_alpha()
         self.__game_bg = pygame.transform.smoothscale(self.game_bg, (950, 1060))
 
+        # self.__ranking_bg = pygame.image.load('images/bg/background.png').convert_alpha()
+        # self.__ranking_bg = pygame.transform.smoothscale(self.ranking_bg, (self.display.screen_width, self.display.screen_height))
+
+
     @property
     def fonts(self):
         return self.__fonts
@@ -102,3 +106,11 @@ class Surfaces:
     @game_bg.setter
     def game_bg(self, value):
         self.__game_bg = value
+
+    # @property
+    # def ranking_bg(self):
+    #     return self.__ranking_bg
+
+    # @ranking_bg.setter 
+    # def ranking_bg(self, value):
+    #     self.__ranking_bg = value

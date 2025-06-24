@@ -5,14 +5,14 @@ from sound import Sound
 import os
 
 class MysteryShip(pygame.sprite.Sprite):
-    def __init__(self, screen_width: int, screen_height: int, offset: int, spaceship) -> None:
+    def __init__(self, screen_width: int, screen_height: int, offset: int, spaceship, sound) -> None:
         super().__init__()
         
         self.__screen_width = screen_width
         self.__screen_height = screen_height
         self.__offset = offset
         self.__spaceship = spaceship
-        self.__mystery_sound = Sound().mystery_sound
+        self.__mystery_sound = sound.mystery_sound
 
         # Carregar imagem da nave misteriosa
         self.__image = pygame.image.load('images/aliens/mystery.png')    
@@ -127,3 +127,8 @@ class MysteryShip(pygame.sprite.Sprite):
     def update(self) -> None:
         if self.spaceship.spaceship_group.sprite:
             self.rect.x = self.spaceship.spaceship_group.sprite.rect.x - 20
+
+    def destroy_mystery_ship(self):
+        self.mystery_ship_group.empty()
+        self.mystery_health = 3
+        self.mystery_kill = False

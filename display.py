@@ -301,7 +301,7 @@ class Display:
         self.update_menu_buttons()
         
         if self.settings.settings_state:
-            self.settings.draw_settings()
+            self.settings.draw_settings(self.game.events)
             return
         
         if self.game.game_state:            
@@ -313,11 +313,11 @@ class Display:
             self.ui_elements()
             self.game_elements()
         else:
-            self.main_menu()
+            self.main_menu(self.game.events)
         
         pygame.display.flip()
 
-    def main_menu(self) -> None: # Tela de Início
+    def main_menu(self, events) -> None: # Recebe eventos como argumento
         self.screen.blit(self.surfaces.main_bg, (0,0))
 
         MOUSE_POS = pygame.mouse.get_pos()
@@ -329,7 +329,7 @@ class Display:
             button.change_color(MOUSE_POS)
             button.update(self.screen)
         
-        for event in pygame.event.get():
+        for event in events:  # Use os eventos recebidos
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -352,6 +352,7 @@ class Display:
 
                 if self.ranking_button.check_for_input(MOUSE_POS):
                     self.draw_ranking()
+
 
     def pause_menu(self, events) -> None: # Menu de pausa, ao pressionar ESC durante o jogo
         # Desenha Semi transparência
@@ -444,3 +445,6 @@ class Display:
                     else:
                         if len(name) < 10 and event.unicode.isalnum():
                             name += event.unicode
+
+            pygame.display.flip()
+            self.game.clock.tick(60)

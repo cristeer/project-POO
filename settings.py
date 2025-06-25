@@ -134,7 +134,7 @@ class Settings:
         self.__back_button = value
     
     # Métodos
-    def draw_settings(self) -> None: # Exibe as configurações do jogo
+    def draw_settings(self, events) -> None: # Exibe as configurações do jogo
         if not self.settings_state:
             return
 
@@ -155,7 +155,7 @@ class Settings:
             button.update(self.screen)
 
         # Controla os eventos do input do jogador
-        for event in pygame.event.get():
+        for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -176,3 +176,6 @@ class Settings:
                     
                 elif self.music_volume_down.check_for_input(mouse_pos):
                     self.sound.music_volume_down()
+        
+        pygame.display.flip()
+        self.display.game.clock.tick(60)

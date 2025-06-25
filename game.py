@@ -411,6 +411,9 @@ class Game:
                     self.level += 1
                     self.display.surfaces.level_surface = self.display.fonts.font.render(f'LEVEL {self.level:02}', False, self.display.YELLOW)
                     self.reset_game()
+            else:
+                if not self.display.settings.settings_state:
+                    self.display.main_menu(self.events)  # Passe os eventos aqui
 
             if self.spaceship.transformation_active and self.mystery_ship.mystery_kill: # Super Ativda
                 self.spaceship.super_spaceship()
@@ -424,3 +427,4 @@ class Game:
             self.display.draw_game()
             pygame.display.update()
             self.clock.tick(60)
+            

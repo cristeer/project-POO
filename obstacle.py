@@ -34,7 +34,7 @@ class Obstacle:
     def blocks_group(self, value):
         self.__blocks_group = value
 
-    
+    # Métodos
     def create_obstacles(self, screen_height):
         obstacles = []
         x = 650

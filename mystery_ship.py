@@ -1,13 +1,11 @@
 import pygame
-from random import choice
 from mystery_laser import MysteryLaser
 from sound import Sound
-import os
+from spaceship import Spaceship
 
 class MysteryShip(pygame.sprite.Sprite):
-    def __init__(self, screen_width: int, screen_height: int, offset: int, spaceship, sound) -> None:
+    def __init__(self, screen_width: int, screen_height: int, offset: int, spaceship:Spaceship, sound:Sound) -> None:
         super().__init__()
-        
         self.__screen_width = screen_width
         self.__screen_height = screen_height
         self.__offset = offset
@@ -114,10 +112,11 @@ class MysteryShip(pygame.sprite.Sprite):
     def mystery_ship_lasers_group(self, value):
         self.__mystery_ship_lasers_group = value
 
-    def create_mystery_ship(self) -> None:
+    # Métodos
+    def create_mystery_ship(self) -> None: # Cria Nave Misteriosa
         self.mystery_ship_group.add(self)
 
-    def mystery_shoot(self) -> None:
+    def mystery_shoot(self) -> None: # Nave misteriosa atira lasers
         if self.mystery_ship_group:
             position = self.mystery_ship_group.sprite.rect.center
             mystery_laser = MysteryLaser(position, -20, self.screen_height, self.spaceship.spaceship_group)
@@ -128,7 +127,7 @@ class MysteryShip(pygame.sprite.Sprite):
         if self.spaceship.spaceship_group.sprite:
             self.rect.x = self.spaceship.spaceship_group.sprite.rect.x - 20
 
-    def destroy_mystery_ship(self):
+    def destroy_mystery_ship(self) -> None: # Destrutor
         self.mystery_ship_group.empty()
         self.mystery_health = 3
         self.mystery_kill = False

@@ -77,13 +77,14 @@ class Button():
 	def rect(self, value):
 		self.__rect = value
 
-	def update(self, screen):
+	# Métodos
+	def update(self, screen) -> None: # Atualiza
 		screen.blit(self.text, self.rect)
 
-	def check_for_input(self, position):
+	def check_for_input(self, position) -> bool: # Verifica se o usuário pressionou o botão
 		return self.rect.collidepoint(position)
 
-	def change_color(self, position):
+	def change_color(self, position) -> None: # Efeito de "Hover"
 		if self.rect.collidepoint(position):
 			self.text = self.font.render(self.text_input, True, self.hovering_color)
 		else:

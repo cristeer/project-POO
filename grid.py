@@ -11,7 +11,8 @@ class Grid:
     def grid(self,value):
         self.__grid = value
 
-    def create_grid(self):
+    # Métodos
+    def create_grid(self) -> None: # Retorna a matriz
         self.grid = [
             [0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0],
             [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],

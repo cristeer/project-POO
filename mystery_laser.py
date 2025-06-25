@@ -1,9 +1,9 @@
 import pygame
 from laser import Laser
+from spaceship import Spaceship
 
 class MysteryLaser(Laser):
-    def __init__(self, position: tuple, speed: int, height: int, spaceship_group):
-    
+    def __init__(self, position: tuple, speed: int, height: int, spaceship_group: Spaceship):
         self.__RED = (255, 0, 0)
         self.__speed = speed
         self.__height = height
@@ -67,15 +67,15 @@ class MysteryLaser(Laser):
         self.__rect = value
 
     # Métodos
-    def destroy(self):
+    def destroy_mystery_laser(self) -> None: # Destroi o laser caso passe a tela
         if self.rect.y + 60 > self.height or self.rect.y < 0:
             self.kill()
     
-    def laser_move(self):
+    def laser_move(self) -> None: # Move os lasers para baixo
         self.rect.y -= self.speed
         if self.spaceship_group.sprite:
             self.rect.x = self.spaceship_group.sprite.rect.x
 
-    def update(self):
+    def update(self) -> None: # Atualiza os lasers
         self.laser_move()
-        self.destroy()
+        self.destroy_mystery_laser()

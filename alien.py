@@ -75,8 +75,9 @@ class Alien(pygame.sprite.Sprite):
     @rect.setter
     def rect(self, value):
         self.__rect = value
- 
-    def create_aliens(self, offset: int) -> None:
+
+    # Métodos
+    def create_aliens(self, offset: int) -> None: # Inicia os Aliens
         self.aliens_group.empty()
         for row in range(7):
             for col in range(11):
@@ -93,7 +94,7 @@ class Alien(pygame.sprite.Sprite):
                 alien_inst = Alien(offset, alien_type, (x + offset/2), y)
                 self.aliens_group.add(alien_inst)
 
-    def move_aliens(self, offset: int) -> None:
+    def move_aliens(self, offset: int) -> None: # Move-os lateralmente
         for alien in self.aliens_group:
             if alien.rect.right >= (1415 - offset):
                 self.aliens_direction = -1
@@ -104,12 +105,12 @@ class Alien(pygame.sprite.Sprite):
                 self.__move_aliens_down_(2)
                 break
     
-    def __move_aliens_down_(self, distance: int) -> None:
+    def __move_aliens_down_(self, distance: int) -> None: # Método privado que move para baixo
         if self.aliens_group:
             for alien in self.aliens_group:
                 alien.rect.y += distance
 
-    def aliens_shoot(self, screen_height: int) -> None:
+    def aliens_shoot(self, screen_height: int) -> None: # Aliens disparam lasers
         if self.aliens_group:
             rand_alien = choice(self.aliens_group.sprites())
             laser_sprite = Laser(rand_alien.rect.center, -6, screen_height)
@@ -118,7 +119,7 @@ class Alien(pygame.sprite.Sprite):
     def update(self, direction: int) -> None:
         self.rect.x += direction
 
-    def destroy_aliens(self):
-        self.aliens_group.empty() # implementar no destrutor
+    def destroy_aliens(self) -> None: # Destrutor
+        self.aliens_group.empty()
         self.aliens_lasers_group.empty()
         self.aliens_direction = 1

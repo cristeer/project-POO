@@ -1,6 +1,6 @@
-# 🕹️ Jogo Plataformer 2D em Python
+# 🕹️ Space Invaders em Python
 
-Este é um projeto de um jogo 2D desenvolvido em Python usando a biblioteca Pygame e conceitos de Programação Orientada a Objetos (POO).
+Este é um projeto que visa a criação de uma réplica do clássico Space Invaders, utilizando a biblioteca Pygame e conceitos de Programação Orientada a Objetos (POO).
 
 ## 🎯 Objetivo
 

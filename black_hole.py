@@ -1,8 +1,4 @@
-import pygame
-from spaceship import Spaceship
-
-import pygame
-import math
+import pygame, math
 from spaceship import Spaceship
 
 class BlackHole(pygame.sprite.Sprite):
@@ -87,7 +83,8 @@ class BlackHole(pygame.sprite.Sprite):
     def offset(self, value):
         self.__offset = value
 
-    def move(self) -> None:
+    # Métodos
+    def move(self) -> None: # Movimentação
         # Move em direção ao jogador
         self.rect.x += self.direction * self.speed
         
@@ -98,10 +95,10 @@ class BlackHole(pygame.sprite.Sprite):
         
         # Aplica força gravitacional se estiver próximo
         if distance < 450:
-            attraction = self.attraction_force * (1 - distance/500)
+            attraction = self.attraction_force * (1 - distance/450)
             self.spaceship.rect.x += int((dx/distance) * attraction)
     
-    def constrains_movement(self) -> None:
+    def constrains_movement(self) -> None: # Restrições de Movimento
         if self.rect.right >= (1415 - self.offset):
             self.rect.right = (1415 - self.offset)
             self.direction = -1
@@ -109,13 +106,13 @@ class BlackHole(pygame.sprite.Sprite):
             self.rect.left = (485 + self.offset)
             self.direction = 1
 
-    def create_black_hole(self):
+    def create_black_hole(self) -> None: # Construtor
         self.black_hole_group.add(self)
 
-    def destroy_black_hole(self):
+    def destroy_black_hole(self) -> None: # Destrutor
         self.black_hole_group.empty()
 
-    def update(self):
+    def update(self) -> None: # Atualiza
         if self.black_hole_group:
             self.move()
             self.constrains_movement()

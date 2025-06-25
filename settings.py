@@ -134,26 +134,23 @@ class Settings:
         self.__back_button = value
     
     # Métodos
-    def draw_settings(self):
+    def draw_settings(self) -> None: # Exibe as configurações do jogo
         if not self.settings_state:
             return
 
-        # Draw background
+        # Fundo e Título
         self.screen.blit(self.display.surfaces.main_bg, (0,0))
         self.screen.blit(self.display.surfaces.settings_title, self.display.surfaces.settings_title_rect)
         
-        # # Draw volume levels
+        # Níveis de Volume
         self.game_vol_text = self.fonts.button_font.render(f"Game Volume: {int(self.sound.game_volume * 100)}%", True, self.display.YELLOW)
         self.music_vol_text = self.fonts.button_font.render(f"Music Volume: {int(self.sound.music_volume * 100)}%", True, self.display.YELLOW)
-        
         self.screen.blit(self.game_vol_text, self.game_vol_text.get_rect(center = (960, 300)))
         self.screen.blit(self.music_vol_text, self.music_vol_text.get_rect(center = (960, 600)))
         
-        # Draw buttons
+        # Exibe os botões
         mouse_pos = pygame.mouse.get_pos()
-        for button in [self.game_volume_up, self.game_volume_down, 
-                      self.music_volume_up, self.music_volume_down, 
-                      self.back_button]:
+        for button in [self.game_volume_up, self.game_volume_down, self.music_volume_up, self.music_volume_down, self.back_button]:
             button.change_color(mouse_pos)
             button.update(self.screen)
 

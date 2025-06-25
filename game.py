@@ -60,6 +60,7 @@ class Game:
         self.__save = Save(self)
         self.__ranking = Ranking()
 
+    # Getters e Setters
     @property
     def sound(self):
         return self.__sound
@@ -244,6 +245,7 @@ class Game:
     def ranking(self, value):
         self.__ranking = value
 
+    # Métodos
     def check_for_collisions(self) -> None:
         # Colisões dos lasers do jogador
         for laser_sprite in self.spaceship.laser_group:
@@ -280,9 +282,8 @@ class Game:
             if pygame.sprite.spritecollide(laser_sprite, self.spaceship.spaceship_group, False):
                 laser_sprite.kill()
                 if not self.spaceship.transformation_active:
-                    #self.spaceship.player_lives -= 1
-                    self.spaceship - 1
-                if self.spaceship == 0:
+                    self.spaceship - 1 # Sobrecarga Subtração (__sub__)
+                if self.spaceship == 0:# Sobrecarga Igualdade (__eq__)
                     self.game_over()
             for obstacle in self.obstacles:
                 if pygame.sprite.spritecollide(laser_sprite, obstacle.blocks_group, True):
@@ -300,15 +301,15 @@ class Game:
             if pygame.sprite.spritecollide(laser_sprite, self.spaceship.spaceship_group, False):
                 laser_sprite.kill()
                 if not self.spaceship.transformation_active:
-                    self.spaceship.player_lives -= 1
-                if self.spaceship.player_lives == 0:
+                    self.spaceship - 1
+                if self.spaceship == 0:
                     self.game_over()
             for obstacle in self.obstacles:
                 if pygame.sprite.spritecollide(laser_sprite, obstacle.blocks_group, True):
                     laser_sprite.kill()
 
-    def game_over(self) -> None:
-        # Salvar a pontuação atual antes de resetar (Modificado pelo Luiz)
+    def game_over(self) -> None: # Trata dos eventos pós-morte 
+        # Ranking
         if self.score > 0:
             player_name = self.display.get_player_name()
             self.ranking.add_score(player_name, self.score)
@@ -323,28 +324,27 @@ class Game:
         self.score = 0
         self.black_hole.destroy_black_hole()       
 
+        # Remove o Save
         if os.path.exists('save_game.json'):
             os.remove('save_game.json')
 
     def reset_game(self) -> None:
+        # Destrutores
         self.spaceship.destroy_spaceship()
-
         self.alien.destroy_aliens()
-
         self.mystery_ship.destroy_mystery_ship()
-
         self.black_hole.destroy_black_hole()
 
-
+        # Construtores
         self.alien.create_aliens(self.offset)
         self.obstacles = self.obstacle.create_obstacles(self.screen_height)
 
+        # Eventos do Jogo
         self.game_state = True
-
         pygame.time.set_timer(self.MYSTERYSHIP_SPAWN, randint(10000, 15000))
         pygame.time.set_timer(self.BLACK_HOLE_SPAWN, randint(10000, 15000))
 
-    def check_for_highscore(self):
+    def check_for_highscore(self) -> None: # Monitora o Highscore
         if self.score > self.highscore:
             self.highscore = self.score
 
@@ -352,19 +352,18 @@ class Game:
             with open('highscore.json', 'w') as file: 
                 json.dump(self.highscore, file)
     
-    # Carrega o highscore do arquivo JSON
-    def load_highscore(self):
-        try: #tenta abrir highscore.json para leitura
-            with open('highscore.json', 'r') as file:
+    def load_highscore(self) -> None: # Carrega o highscore do arquivo JSON
+        try: 
+            with open('highscore.json', 'r') as file: #tenta abrir highscore.json para leitura
                 self.highscore = int(json.load(file)) #lê e converte o valor para int
         except FileNotFoundError: #se nao existir o arquivo, define o highscore como 0
             self.highscore = 0
 
-
     def run_game(self) -> None:
-        while True:
+        while True: # Laço Principal
             self.events = pygame.event.get()
-            for event in self.events:
+
+            for event in self.events: # Eventos do Jogo
                 if event.type == pygame.QUIT:
                     self.save.save_game()
                     pygame.quit()
@@ -413,11 +412,11 @@ class Game:
                     self.display.surfaces.level_surface = self.display.fonts.font.render(f'LEVEL {self.level:02}', False, self.display.YELLOW)
                     self.reset_game()
 
-            if self.spaceship.transformation_active and self.mystery_ship.mystery_kill:
+            if self.spaceship.transformation_active and self.mystery_ship.mystery_kill: # Super Ativda
                 self.spaceship.super_spaceship()
                 self.mystery_ship.mystery_kill = False
 
-            if self.spaceship.transformation_active:
+            if self.spaceship.transformation_active: # Contador da Super
                 current_time = pygame.time.get_ticks()
                 if current_time - self.spaceship.transformation_time >= 10000:
                     self.spaceship.reset_transformation()

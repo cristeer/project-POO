@@ -9,23 +9,35 @@ class Surfaces:
         self.__display = display
         self.__game = game
 
+        # Icones de vida do Jogador
         self.__life_icon = pygame.image.load('images/spaceship/spaceship.png')
         self.__life_icon = pygame.transform.scale(self.life_icon, (40, 25))
         
+        # Textos Básicos
         self.__game_over_surface = self.fonts.font.render('GAME OVER', False, self.display.YELLOW)
         self.__score_text_surface = self.fonts.font.render('SCORE', False, self.display.YELLOW)
         self.__highscore_text_surface = self.fonts.font.render('HIGH-SCORE', False, self.display.YELLOW)
         self.__level_surface = self.fonts.font.render(f'LEVEL {self.game.level:02}', False, self.display.YELLOW)
+        
+        # Título do Jogo
+        self.__GAME_TITLE = self.fonts.title_font.render("SPACE INVADERS", True, self.display.YELLOW)
+        self.__GAME_TITLE_RECT = self.GAME_TITLE.get_rect(center = (960, 200))
 
+        # Título do Menu de Ranking
+        self.__ranking_title = self.fonts.title_font.render("RANKING", True, self.display.YELLOW)
+        self.__ranking_title_rect = self.ranking_title.get_rect(center = (960, 200))
+
+        # Fundo do Menu
         self.__main_bg = pygame.image.load('images/bg/background.png').convert_alpha()
         self.__main_bg = pygame.transform.smoothscale(self.main_bg, (self.display.screen_width, self.display.screen_height))
 
+        # Fundo do Jogo
         self.__game_bg = pygame.image.load('images/bg/background.png').convert_alpha()
         self.__game_bg = pygame.transform.smoothscale(self.game_bg, (950, 1060))
 
-        # self.__ranking_bg = pygame.image.load('images/bg/background.png').convert_alpha()
-        # self.__ranking_bg = pygame.transform.smoothscale(self.ranking_bg, (self.display.screen_width, self.display.screen_height))
-
+        # Entrada de Nome
+        self.__enter_name = self.fonts.button_font.render("Enter Your Name", True, self.display.YELLOW)
+        self.__enter_name_rect = self.enter_name.get_rect(center = (960, 300))
 
     @property
     def fonts(self):
@@ -107,10 +119,56 @@ class Surfaces:
     def game_bg(self, value):
         self.__game_bg = value
 
-    # @property
-    # def ranking_bg(self):
-    #     return self.__ranking_bg
+    @property
+    def GAME_TITLE(self):
+        return self.__GAME_TITLE
 
-    # @ranking_bg.setter 
-    # def ranking_bg(self, value):
-    #     self.__ranking_bg = value
+    @GAME_TITLE.setter
+    def GAME_TITLE(self, value):
+        self.__GAME_TITLE = value
+
+    @property
+    def GAME_TITLE_RECT(self):
+        return self.__GAME_TITLE_RECT
+
+    @GAME_TITLE_RECT.setter
+    def GAME_TITLE_RECT(self, value):
+        self.__GAME_TITLE_RECT = value
+
+    @property
+    def ranking_title(self):
+        return self.__ranking_title
+
+    @ranking_title.setter
+    def ranking_title(self, value):
+        self.__ranking_title = value
+
+    @property
+    def ranking_title_rect(self):
+        return self.__ranking_title_rect
+
+    @ranking_title_rect.setter
+    def ranking_title_rect(self, value):
+        self.__ranking_title_rect = value
+
+    @property
+    def enter_name(self):
+        return self.__enter_name
+
+    @enter_name.setter
+    def enter_name(self, value):
+        self.__enter_name = value
+
+    @property
+    def enter_name_rect(self):
+        return self.__enter_name_rect
+
+    @enter_name_rect.setter
+    def enter_name_rect(self, value):
+        self.__enter_name_rect = value
+
+    def draw_entry_box(self, name:str) -> None: # Campo de entrada
+        input_box = pygame.Rect(710, 400, 500, 70)
+        txt_surface = self.fonts.button_font.render(name, True, self.display.YELLOW)
+        self.game.screen.blit(txt_surface, (input_box.x + 20, input_box.y - 5))
+        pygame.draw.rect(self.game.screen, self.display.YELLOW, input_box, 2)

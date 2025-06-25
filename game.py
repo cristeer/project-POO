@@ -54,12 +54,11 @@ class Game:
         self.__alien = Alien(self.offset)
         self.__obstacle = Obstacle()
         self.__obstacles = []
-        self.__black_hole = BlackHole(self.spaceship, x = 400, y = 750, offset = 50) #corrigir, não está dinamizado 
+        self.__black_hole = BlackHole(self.spaceship, x = 400, y = 750, offset = 50)
         
         self.__display = Display(self)
         self.__save = Save(self)
         self.__ranking = Ranking()
-        #self.events = pygame.event.get()
 
     @property
     def sound(self):

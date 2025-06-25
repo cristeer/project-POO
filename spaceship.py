@@ -197,13 +197,13 @@ class Spaceship(pygame.sprite.Sprite):
             if self.current_time - self.laser_time >= self.laser_delay:
                 self.laser_ready = True
     
-    def update(self) -> None:
+    def update(self) -> None: # Atualiza a nave
         self.laser_group.update()
         self.get_user_input()
         self.constrains()
         self.recharge_laser()
 
-    def super_spaceship(self) -> None:
+    def super_spaceship(self) -> None: # Transformação Ativa
         self.speed = 12
         # Transformar a nave (aumentar tamanho)
         self.image = pygame.transform.scale2x(self.original_image)
@@ -212,7 +212,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.laser_delay = 100
         self.transformation_time = pygame.time.get_ticks()
 
-    def reset_transformation(self) -> None:
+    def reset_transformation(self) -> None: # Transformação Inativa
         self.speed = 6
         self.image = self.original_image.copy()
         old_center = self.rect.center
@@ -221,14 +221,13 @@ class Spaceship(pygame.sprite.Sprite):
         self.transformation_active = False
         self.transformation_time = 0
 
-    def reset(self) -> None:
+    def reset_position(self) -> None: # Reinicia posição da Nave
         self.rect = self.image.get_rect(midbottom = (self.width/2, self.height - 100))
         self.laser_group.empty()
 
-    def destroy_spaceship(self):
-        self.reset()
+    def destroy_spaceship(self): # Destrutor
+        self.reset_position()
         self.transformation_active = False 
         self.transformation_time = 0
-
         self.spaceship_group.empty()
         self.spaceship_group.add(self)

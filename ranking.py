@@ -33,7 +33,7 @@ class Ranking:
                 self.scores = []
         except:
             self.scores = []
-    
+     
     def get_ranking(self):
         return self.scores
     

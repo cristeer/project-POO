@@ -6,7 +6,7 @@ class Fonts:
         
         self.__font = pygame.font.Font('fonts/monogram.ttf', 50)
         self.__title_font = pygame.font.Font('fonts/monogram.ttf', 200)
-        self.__button_font = pygame.font.Font('fonts/monogram.ttf', 80)
+        self.__button_font = pygame.font.Font('fonts/monogram.ttf', 100)
 
     # Setters e Getters
     @property

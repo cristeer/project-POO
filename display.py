@@ -81,7 +81,7 @@ class Display:
             hovering_color="#b68f40"
         )
 
-    def update_menu_buttons(self):
+    def update_menu_buttons(self) -> None:
         if os.path.exists('save_game.json'):
             self.play_button = Button(
                 pos = (960, 490),
@@ -99,7 +99,7 @@ class Display:
                 hovering_color = "#b68f40"
             )
 
-    def update_background_position(self):
+    def update_background_position(self) -> None: # Atualiza a posição de fundo
         self.bg_scroll_y = (self.bg_scroll_y + self.bg_scroll_speed) % 1060
 
     def game_elements(self) -> None: # Desenhar sprites
@@ -143,7 +143,7 @@ class Display:
         self.screen.blit(self.surfaces.score_text_surface, (520, 25))
 
 
-    def draw_game(self):
+    def draw_game(self) -> None: # Exibe todos elementos visuais do jogo
         
         self.screen.fill(self.GREY)
         self.update_menu_buttons()
@@ -152,10 +152,9 @@ class Display:
             self.settings.draw_settings()
             return
         
-        if self.game.game_state:
+        if self.game.game_state:            
+            # Rolagem Vertical
             self.update_background_position()
-            
-            # Scroll Vertical
             self.screen.blit(self.surfaces.game_bg, (485, 10 + self.bg_scroll_y))
             self.screen.blit(self.surfaces.game_bg, (485, 10 + self.bg_scroll_y - 1060))
             
@@ -166,18 +165,14 @@ class Display:
         
         pygame.display.flip()
 
-    def main_menu(self):
+    def main_menu(self) -> None: # Tela de Início
 
         self.screen.blit(self.surfaces.main_bg, (0,0))
-
-        # Título
-        self.GAME_TITLE = self.fonts.title_font.render("SPACE INVADERS", True, self.YELLOW)
-        self.GAME_TITLE_RECT = self.GAME_TITLE.get_rect(center = (960, 200))
 
         MOUSE_POS = pygame.mouse.get_pos()
 
         # Exibe o menu
-        self.screen.blit(self.GAME_TITLE, self.GAME_TITLE_RECT)
+        self.screen.blit(self.surfaces.GAME_TITLE, self.surfaces.GAME_TITLE_RECT)
         
         for button in [self.play_button, self.settings_button, self.ranking_button, self.quit_button]:
             button.change_color(MOUSE_POS)
@@ -208,7 +203,7 @@ class Display:
                 if self.ranking_button.check_for_input(MOUSE_POS):
                     self.draw_ranking()
 
-    def pause_menu(self, events):
+    def pause_menu(self, events) -> None: # Menu de pausa, ao pressionar ESC durante o jogo
         # Desenha Semi transparência
         overlay = pygame.Surface((self.screen_width, self.screen_height))
         overlay.fill((0, 0, 0))
@@ -240,25 +235,13 @@ class Display:
             pygame.display.flip()
             self.game.clock.tick(60)
 
-
-    def draw_ranking(self):
+    def draw_ranking(self) -> None: # Desenha o ranking 
         while True:
-            self.screen.fill(self.GREY)
+            self.screen.blit(self.surfaces.main_bg, (0, 0))
 
-            ranking_title = self.fonts.title_font.render("______RANKING______", True, self.YELLOW)
-            ranking_title_rect = ranking_title.get_rect(center = (960, 200))
-            self.screen.blit(ranking_title, ranking_title_rect)
+            self.screen.blit(self.surfaces.ranking_title, self.surfaces.ranking_title_rect)
 
-            scores = self.game.ranking.get_ranking()
-            y_pos = 350
-
-            for i, score_entry in enumerate(scores, 1):
-                score_text = self.fonts.button_font.render (f"#{i} {score_entry['name']}: {score_entry['score']:06d}", True, self.YELLOW)
-
-                score_rect = score_text.get_rect(center = (960, y_pos))
-
-                self.screen.blit(score_text, score_rect)
-                y_pos += 60
+            self. __list_players()
 
             MOUSE_POS = pygame.mouse.get_pos()
             self.back_button_ranking.change_color(MOUSE_POS)
@@ -275,26 +258,26 @@ class Display:
                     
             pygame.display.flip()
             self.game.clock.tick(60)
-    def get_player_name(self):
+      
+    def __list_players(self) -> None: # Lista os jogadores
+        scores = self.game.ranking.get_ranking()
+        y_pos = 350
+
+        for i, score_entry in enumerate(scores, 1):
+            score_text = self.fonts.button_font.render (f"#{i} {score_entry['name']}: {score_entry['score']:06d}", True, self.YELLOW)
+            score_rect = score_text.get_rect(center = (960, y_pos))
+            self.screen.blit(score_text, score_rect)
+            y_pos += 60 
+
+    def get_player_name(self) -> None: # Jogador entra com nome ao fim da partida.
         name = ''
         input_active = True
 
         while input_active:
             self.screen.blit(self.surfaces.main_bg, (0,0))
-
-            # Título
-            title = self.fonts.title_font.render("Enter Your Name", True, self.YELLOW)
-            title_rect = title.get_rect(center = (960, 300))
-            self.screen.blit(title, title_rect)
-
-            # Campo de entrada
-            input_box = pygame.Rect(710, 400, 500, 60)
-            txt_surface = self.fonts.button_font.render(name, True, self.YELLOW)
-            self.screen.blit(txt_surface, (input_box.x + 20, input_box.y - 5))
-            pygame.draw.rect(self.screen, self.YELLOW, input_box, 2)
-
+            self.screen.blit(self.surfaces.enter_name, self.surfaces.enter_name_rect)
+            self.surfaces.draw_entry_box(name)
             pygame.display.flip()
-            #self.game.clock.tick(60)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -311,4 +294,3 @@ class Display:
                     else:
                         if len(name) < 10 and event.unicode.isalnum():
                             name += event.unicode
-

@@ -1,7 +1,5 @@
 import pygame
 from laser import Laser
-from sound import Sound
-
 class Spaceship(pygame.sprite.Sprite):
     def __init__(self, width: int, height: int, offset: int, sound = None, position = None) -> None:
         super().__init__()
@@ -22,9 +20,8 @@ class Spaceship(pygame.sprite.Sprite):
         else:
             self.rect = self.image.get_rect(midbottom = (self.width/2, self.height - 100))
         
-        self.__current_time = 0 #Possivel problema de encapsulamento
-
         # Laser
+        self.__current_time = 0
         self.__laser_ready = True
         self.__laser_delay = 300
         self.__laser_time = 0
@@ -169,29 +166,29 @@ class Spaceship(pygame.sprite.Sprite):
         self.__spaceship_group = value
 
     # Métodos
-    def get_user_input(self) -> None:
+    def get_user_input(self) -> None: #i Entrada do Usuário
         keys = pygame.key.get_pressed()
 
-        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]):
+        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]): # Move Direita
             self.rect.x += self.speed
 
-        elif (keys[pygame.K_LEFT] or keys[pygame.K_a]):
+        elif (keys[pygame.K_LEFT] or keys[pygame.K_a]): # Move Esquerda
             self.rect.x -= self.speed
 
-        elif (keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]) and self.laser_ready:
+        elif (keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]) and self.laser_ready: # Atira
             self.laser_ready = False
             laser = Laser(self.rect.center, 5, self.height)
             self.laser_group.add(laser)
             self.laser_time = pygame.time.get_ticks()
             self.laser_sound.play()
 
-    def constrains(self) -> None:
+    def movement_constrains(self) -> None: # Limitações de movimento
         if self.rect.right > (1415 - self.offset):
             self.rect.right = (1415 - self.offset)
         elif self.rect.left < (485 + self.offset):
             self.rect.left = (485 + self.offset)
 
-    def recharge_laser(self) -> None:
+    def recharge_laser(self) -> None: # Recarga dos lasers
         if not self.laser_ready:
             self.current_time = pygame.time.get_ticks()
             if self.current_time - self.laser_time >= self.laser_delay:
@@ -200,7 +197,7 @@ class Spaceship(pygame.sprite.Sprite):
     def update(self) -> None: # Atualiza a nave
         self.laser_group.update()
         self.get_user_input()
-        self.constrains()
+        self.movement_constrains()
         self.recharge_laser()
 
     def super_spaceship(self) -> None: # Transformação Ativa
@@ -231,3 +228,19 @@ class Spaceship(pygame.sprite.Sprite):
         self.transformation_time = 0
         self.spaceship_group.empty()
         self.spaceship_group.add(self)
+
+    def __sub__(self, value):
+        if isinstance(value, int):
+            self.player_lives -= value
+            if self.player_lives < 0:
+                self.player_lives = 0
+            return self 
+
+    def __eq__(self, value):
+        if isinstance(value, int):
+            return self.player_lives == value
+        
+    def __hash__(self):
+        return id(self)
+    
+    # Necessário pois o hash, ao executar uma das sobrecargas acima, vem por padrão como None, mas pygame.sprite.Sprite requer que todos os membros possuam hash, logo, esta linha é necessária para sanar o problema

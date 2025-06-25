@@ -8,12 +8,10 @@ class Settings:
         self.__fonts = display.fonts
         self.__sound = display.game.sound
 
-    
-        
-        # Settings state
+        # Configuração Estado
         self.__settings_state = False
         
-        # Create buttons
+        # Botões
         self.__game_volume_up = Button(
             pos = (960, 400),
             text_input = 'Game Volume +',
@@ -39,7 +37,7 @@ class Settings:
         )
 
         self.__music_volume_down = Button(
-            pos=(960, 800),
+            pos = (960, 800),
             text_input='Music Volume -',
             text_font=self.fonts.button_font,
             base_color="White",
@@ -134,25 +132,22 @@ class Settings:
     @back_button.setter
     def back_button(self, value):
         self.__back_button = value
-        
+    
+    # Métodos
     def draw_settings(self):
         if not self.settings_state:
             return
 
         # Draw background
         self.screen.blit(self.display.surfaces.main_bg, (0,0))
+        self.screen.blit(self.display.surfaces.settings_title, self.display.surfaces.settings_title_rect)
         
-        # Draw title
-        title = self.fonts.title_font.render("SETTINGS", True, self.display.YELLOW)
-        title_rect = title.get_rect(center = (960, 200))
-        self.screen.blit(title, title_rect)
+        # # Draw volume levels
+        self.game_vol_text = self.fonts.button_font.render(f"Game Volume: {int(self.sound.game_volume * 100)}%", True, self.display.YELLOW)
+        self.music_vol_text = self.fonts.button_font.render(f"Music Volume: {int(self.sound.music_volume * 100)}%", True, self.display.YELLOW)
         
-        # Draw volume levels
-        game_vol = self.fonts.button_font.render(f"Game Volume: {int(self.sound.game_volume * 100)}%", True, self.display.YELLOW)
-        music_vol = self.fonts.button_font.render(f"Music Volume: {int(self.sound.music_volume * 100)}%", True, self.display.YELLOW)
-        
-        self.screen.blit(game_vol, game_vol.get_rect(center = (960, 300)))
-        self.screen.blit(music_vol, music_vol.get_rect(center = (960, 600)))
+        self.screen.blit(self.game_vol_text, self.game_vol_text.get_rect(center = (960, 300)))
+        self.screen.blit(self.music_vol_text, self.music_vol_text.get_rect(center = (960, 600)))
         
         # Draw buttons
         mouse_pos = pygame.mouse.get_pos()

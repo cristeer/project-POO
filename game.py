@@ -280,8 +280,9 @@ class Game:
             if pygame.sprite.spritecollide(laser_sprite, self.spaceship.spaceship_group, False):
                 laser_sprite.kill()
                 if not self.spaceship.transformation_active:
-                    self.spaceship.player_lives -= 1
-                if self.spaceship.player_lives == 0:
+                    #self.spaceship.player_lives -= 1
+                    self.spaceship - 1
+                if self.spaceship == 0:
                     self.game_over()
             for obstacle in self.obstacles:
                 if pygame.sprite.spritecollide(laser_sprite, obstacle.blocks_group, True):

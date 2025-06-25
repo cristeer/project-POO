@@ -39,6 +39,11 @@ class Surfaces:
         self.__enter_name = self.fonts.button_font.render("Enter Your Name", True, self.display.YELLOW)
         self.__enter_name_rect = self.enter_name.get_rect(center = (960, 300))
 
+        # Settings
+        self.__settings_title = self.fonts.title_font.render("SETTINGS", True, self.display.YELLOW)
+        self.__settings_title_rect = self.settings_title.get_rect(center = (960, 200))
+
+    # Getters e Setters
     @property
     def fonts(self):
         return self.__fonts
@@ -167,6 +172,23 @@ class Surfaces:
     def enter_name_rect(self, value):
         self.__enter_name_rect = value
 
+    @property
+    def settings_title(self):
+        return self.__settings_title
+
+    @settings_title.setter
+    def settings_title(self, value):
+        self.__settings_title = value
+
+    @property
+    def settings_title_rect(self):
+        return self.__settings_title_rect
+
+    @settings_title_rect.setter
+    def settings_title_rect(self, value):
+        self.__settings_title_rect = value
+        
+    # Métodos
     def draw_entry_box(self, name:str) -> None: # Campo de entrada
         input_box = pygame.Rect(710, 400, 500, 70)
         txt_surface = self.fonts.button_font.render(name, True, self.display.YELLOW)

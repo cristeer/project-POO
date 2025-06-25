@@ -229,18 +229,18 @@ class Spaceship(pygame.sprite.Sprite):
         self.spaceship_group.empty()
         self.spaceship_group.add(self)
 
-    def __sub__(self, value):
+    def __sub__(self, value) -> None:
         if isinstance(value, int):
             self.player_lives -= value
             if self.player_lives < 0:
                 self.player_lives = 0
             return self 
 
-    def __eq__(self, value):
+    def __eq__(self, value) -> bool:
         if isinstance(value, int):
             return self.player_lives == value
         
-    def __hash__(self):
+    def __hash__(self) -> int:
         return id(self)
     
     # Necessário pois o hash, ao executar uma das sobrecargas acima, vem por padrão como None, mas pygame.sprite.Sprite requer que todos os membros possuam hash, logo, esta linha é necessária para sanar o problema

@@ -12,7 +12,7 @@ class Sound:
         self.__explosion_sound = pygame.mixer.Sound('music/explosion.ogg')
         self.__mystery_sound = pygame.mixer.Sound('music/laser-zap.mp3')    
         self.__laser_sound = pygame.mixer.Sound('music/laser.ogg')
-        self.__bg_music = pygame.mixer.Sound('music/explosion.ogg')
+        self.__bg_music = pygame.mixer.Sound('music/music.ogg')
 
     # Setters e Getters
     @property
@@ -64,39 +64,27 @@ class Sound:
         self.__music_volume = value
 
     # Métodos
-    def __initialize_sounds(self) -> None: # Inicializa os sons do jogo, para garantir a modulação sonora
+    def loop_music(self) -> None: # Faz com que a música toque indefinidamente
+        self.bg_music.play(-1)
+
+    def set_game_volume(self, volume: float) -> None: # Altera os sons do jogo
+        self.game_volume = max(0.0, min(1.0, volume))
+        self.explosion_sound.set_volume(self.game_volume)
         self.laser_sound.set_volume(self.game_volume)
         self.mystery_sound.set_volume(self.game_volume)
-        self.explosion_sound.set_volume(self.game_volume)
 
-    def loop_music(self) -> None: # Faz com que a música toque indefinidamente
-            self.__initialize_sounds() # Método privado, visto que não é interessante em outras partes.
-            pygame.mixer.music.load('music/music.ogg')
-            pygame.mixer.music.play(-1)
-            pygame.mixer.music.set_volume(self.music_volume)
-
+    def set_music_volume(self, volume: float) -> None: # Altera a Música de Fundo
+        self.music_volume = max(0.0, min(1.0, volume))
+        self.bg_music.set_volume(self.music_volume)
+        
     def game_volume_up(self) -> None: # Aumentar volume do Jogo (Lasers, Explosões, etc)
-        if self.game_volume < 1: 
-            self.game_volume += 0.1
-            self.explosion_sound.set_volume(self.game_volume)
-            self.mystery_sound.set_volume(self.game_volume)
-            self.laser_sound.set_volume(self.game_volume)
-            self.bg_music.set_volume(self.game_volume)
+        self.set_game_volume(self.game_volume + 0.1)
 
     def game_volume_down(self) -> None: # Reduzir volume do jogo
-        if self.game_volume >= 0.1:
-             self.game_volume -= 0.1
-             self.explosion_sound.set_volume(self.game_volume)
-             self.mystery_sound.set_volume(self.game_volume)
-             self.laser_sound.set_volume(self.game_volume)
-             self.bg_music.set_volume(self.game_volume)
+        self.set_game_volume(self.game_volume - 0.1)
 
     def music_volume_up(self) -> None: # Aumentar Música
-        if self.music_volume < 1: 
-            self.music_volume += 0.1  
-            pygame.mixer.music.set_volume(self.music_volume)
+        self.set_music_volume(self.music_volume + 0.1)
 
     def music_volume_down(self) -> None: # Reduzir Música
-        if self.music_volume >= 0.1:
-            self.music_volume -= 0.1  
-            pygame.mixer.music.set_volume(self.music_volume)
+        self.set_music_volume(self.music_volume - 0.1)

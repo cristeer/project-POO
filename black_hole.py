@@ -96,7 +96,7 @@ class BlackHole(pygame.sprite.Sprite):
         # Aplica força gravitacional se estiver próximo
         if distance < 450:
             attraction = self.attraction_force * (1 - distance/450)
-            self.spaceship.rect.x += int((dx/distance) * attraction)
+            self.spaceship.rect.x -= int((dx/distance) * attraction)
     
     def constrains_movement(self) -> None: # Restrições de Movimento
         if self.rect.right >= (1415 - self.offset):

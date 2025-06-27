@@ -283,6 +283,7 @@ class Game:
                 laser_sprite.kill()
                 if not self.spaceship.transformation_active:
                     self.spaceship - 1 # Sobrecarga Subtração (__sub__)
+                    self.sound.damage_alarm.play()
                 if self.spaceship == 0:# Sobrecarga Igualdade (__eq__)
                     self.game_over()
             for obstacle in self.obstacles:
@@ -302,6 +303,7 @@ class Game:
                 laser_sprite.kill()
                 if not self.spaceship.transformation_active:
                     self.spaceship - 1
+                    self.sound.damage_alarm.play()
                 if self.spaceship == 0:
                     self.game_over()
             for obstacle in self.obstacles:

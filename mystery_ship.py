@@ -129,5 +129,6 @@ class MysteryShip(pygame.sprite.Sprite):
 
     def destroy_mystery_ship(self) -> None: # Destrutor
         self.mystery_ship_group.empty()
+        self.mystery_ship_lasers_group.empty()
         self.mystery_health = 3
         self.mystery_kill = False

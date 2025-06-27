@@ -13,6 +13,7 @@ class Sound:
         self.__mystery_sound = pygame.mixer.Sound('music/laser-zap.mp3')    
         self.__laser_sound = pygame.mixer.Sound('music/laser.ogg')
         self.__bg_music = pygame.mixer.Sound('music/music.ogg')
+        self.__damage_alarm = pygame.mixer.Sound('music/damage_alarm.mp3')
 
     # Setters e Getters
     @property
@@ -63,6 +64,14 @@ class Sound:
     def music_volume(self, value):
         self.__music_volume = value
 
+    @property
+    def damage_alarm(self):
+        return self.__damage_alarm
+
+    @damage_alarm.setter
+    def damage_alarm(self, value):
+        self.__damage_alarm = value
+
     # Métodos
     def loop_music(self) -> None: # Faz com que a música toque indefinidamente
         self.bg_music.play(-1)
@@ -72,6 +81,7 @@ class Sound:
         self.explosion_sound.set_volume(self.game_volume)
         self.laser_sound.set_volume(self.game_volume)
         self.mystery_sound.set_volume(self.game_volume)
+        self.damage_alarm.set_volume(self.game_volume)
 
     def set_music_volume(self, volume: float) -> None: # Altera a Música de Fundo
         self.music_volume = max(0.0, min(1.0, volume))

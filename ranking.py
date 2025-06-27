@@ -2,12 +2,38 @@ import json, os
 
 class Ranking:
     def __init__(self):
-        self.ranking_file = 'ranking.json'
-        self.scores = []
-        self.max_scores = 10
+        self.__ranking_file = 'ranking.json'
+        self.__scores = []
+        self.__max_scores = 10
         
         self.load_ranking()
 
+    # Getters e Setters
+    @property
+    def ranking_file(self):
+        return self.__ranking_file
+
+    @ranking_file.setter
+    def ranking_file(self, value):
+        self.__ranking_file = value
+
+    @property
+    def scores(self):
+        return self.__scores
+
+    @scores.setter
+    def scores(self, value):
+        self.__scores = value
+
+    @property
+    def max_scores(self):
+        return self.__max_scores
+
+    @max_scores.setter
+    def max_scores(self, value):
+        self.__max_scores = value
+
+    # Métodos
     def save_ranking(self) -> None: # Salva as pontuações
         with open(self.ranking_file, 'w') as file:
             json.dump(self.scores, file)
@@ -23,11 +49,8 @@ class Ranking:
  
     def load_ranking(self) -> None: # Carrega o arquivo em self.scores, se este existir
         try:
-            if os.path.exists(self.ranking_file):
-                with open(self.ranking_file, 'r') as file:
-                    self.scores = json.load(file)
-            else:
-                self.scores = []
+            with open(self.ranking_file, 'r') as file:
+                self.scores = json.load(file)
         except:
             self.scores = []
      

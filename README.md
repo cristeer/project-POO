@@ -1,10 +1,8 @@
 # 🕹️ Space Invaders em Python
 
-Este é um projeto que visa a criação de uma réplica do clássico Space Invaders, utilizando a biblioteca Pygame e conceitos de Programação Orientada a Objetos (POO).
-
 ## 🎯 Objetivo
 
-Este projeto foi criado como trabalho prático da disciplina Programação Orientada a Objetos - SIN 141 - para reforçar o uso de POO, estruturando um jogo simples com movimentação, colisão e lógica de jogo usando classes.
+Este projeto visa a criação de uma réplica do clássico jogo Space Invaders, como trabalho prático da disciplina Programação Orientada a Objetos - SIN 141 - para reforçar a prática do uso de conceitos de Programação Orientada a Objetos (POO), estruturando um jogo simples com movimentação, colisão e lógica de jogo usando classes.
 
 ## 🚀 Tecnologias
 

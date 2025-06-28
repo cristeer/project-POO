@@ -1,6 +1,5 @@
 import json
 class Save:
-
     def __init__(self, game):
         self.__game = game
         self.__mystery_ship_position = None

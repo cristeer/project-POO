@@ -4,7 +4,6 @@ from grid import Grid
 
 class Obstacle:
     def __init__(self, x: int = None, y: int = None):
-
         self.__grid = Grid().create_grid().grid
         self.__blocks_group = pygame.sprite.Group()
 

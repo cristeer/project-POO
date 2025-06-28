@@ -1,7 +1,4 @@
-import pygame
-
-class Button():
-	
+class Button():	
 	def __init__(self, pos, text_input, text_font, base_color, hovering_color):
 		self.__x_pos = pos[0]
 		self.__y_pos = pos[1]

@@ -1,4 +1,4 @@
-import json, os
+import json
 
 class Ranking:
     def __init__(self):

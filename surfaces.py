@@ -1,10 +1,8 @@
 import pygame
 from fonts import Fonts
 
-class Surfaces:
-    
-    def __init__(self, display, game):
-        
+class Surfaces:   
+    def __init__(self, display, game):        
         self.__fonts = Fonts()
         self.__display = display
         self.__game = game

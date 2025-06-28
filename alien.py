@@ -3,7 +3,6 @@ from laser import Laser
 from random import choice
 
 class Alien(pygame.sprite.Sprite):
-
     def __init__(self, offset: int, alien_type: int = 1, x: int = None, y: int = 0):
         super().__init__()
         

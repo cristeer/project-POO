@@ -1,9 +1,7 @@
 import pygame
 
 class Fonts:
-
-    def __init__(self):
-        
+    def __init__(self):        
         self.__font = pygame.font.Font('fonts/monogram.ttf', 50)
         self.__title_font = pygame.font.Font('fonts/monogram.ttf', 180)
         self.__button_font = pygame.font.Font('fonts/monogram.ttf', 100)

@@ -281,9 +281,11 @@ class Game:
             if pygame.sprite.spritecollide(laser_sprite, self.spaceship.spaceship_group, False):
                 laser_sprite.kill()
                 if not self.spaceship.transformation_active:
+                    if self.spaceship.player_lives > 1:
+                        self.sound.damage_alarm.play()
                     self.spaceship - 1 # Sobrecarga Subtração (__sub__)
-                    self.sound.damage_alarm.play()
                 if self.spaceship == 0:# Sobrecarga Igualdade (__eq__)
+                    self.sound.explosion_sound.play()
                     self.game_over()
             for obstacle in self.obstacles:
                 if pygame.sprite.spritecollide(laser_sprite, obstacle.blocks_group, True):
@@ -294,6 +296,7 @@ class Game:
             for obstacle in self.obstacles:
                 pygame.sprite.spritecollide(alien, obstacle.blocks_group, True)
             if pygame.sprite.spritecollide(alien, self.spaceship.spaceship_group, False):
+                self.sound.explosion_sound.play()
                 self.game_over()
 
         # Colisões dos lasers da nave misteriosa
@@ -301,9 +304,12 @@ class Game:
             if pygame.sprite.spritecollide(laser_sprite, self.spaceship.spaceship_group, False):
                 laser_sprite.kill()
                 if not self.spaceship.transformation_active:
+                    if self.spaceship.player_lives > 1:
+                        self.sound.damage_alarm.play()
                     self.spaceship - 1
                     self.sound.damage_alarm.play()
                 if self.spaceship == 0:
+                    self.sound.explosion_sound.play()
                     self.game_over()
             for obstacle in self.obstacles:
                 if pygame.sprite.spritecollide(laser_sprite, obstacle.blocks_group, True):

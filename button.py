@@ -1,28 +1,87 @@
-import pygame
+class Button():	
+	def __init__(self, pos, text_input, text_font, base_color, hovering_color):
+		self.__x_pos = pos[0]
+		self.__y_pos = pos[1]
+		self.__font = text_font
+		self.__base_color = base_color
+		self.__hovering_color = hovering_color
+		self.__text_input = text_input
+		self.__text = self.font.render(self.text_input, True, self.base_color)
+		self.__rect = self.text.get_rect(center = (self.x_pos, self.y_pos))
+	
+	# Setters e Getters
+	@property
+	def x_pos(self):
+		return self.__x_pos
+	
+	@x_pos.setter
+	def x_pos(self, value):
+		self.__x_pos = value
 
-class Button():
-	def __init__(self, image, pos, text_input, font, base_color, hovering_color):
-		self.image = image
-		self.x_pos = pos[0]
-		self.y_pos = pos[1]
-		self.font = font
-		self.base_color, self.hovering_color = base_color, hovering_color
-		self.text_input = text_input
-		self.text = self.font.render(self.text_input, True, self.base_color)
-		if self.image is None:
-			self.image = self.text
-		self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
-		self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+	@property
+	def y_pos(self):
+		return self.__y_pos
+	
+	@y_pos.setter
+	def y_pos(self, value):
+		self.__y_pos = value
+		
+	@property
+	def font(self):
+		return self.__font
+	
+	@font.setter
+	def font(self, value):
+		self.__font = value
 
-	def update(self, screen):
-		if self.image is not None:
-			screen.blit(self.image, self.rect)
-		screen.blit(self.text, self.text_rect)
+	@property
+	def base_color(self):
+		return self.__base_color
+	
+	@base_color.setter
+	def base_color(self, value):
+		self.__base_color = value
+		
+	@property
+	def hovering_color(self):
+		return self.__hovering_color
+	
+	@hovering_color.setter
+	def hovering_color(self, value):
+		self.__hovering_color = value
+		
+	@property
+	def text_input(self):
+		return self.__text_input
+	
+	@text_input.setter
+	def text_input(self, value):
+		self.__text_input = value
 
-	def checkForInput(self, position):
+	@property
+	def text(self):
+		return self.__text
+	
+	@text.setter
+	def text(self, value):
+		self.__text = value
+
+	@property
+	def rect(self):
+		return self.__rect
+	
+	@rect.setter
+	def rect(self, value):
+		self.__rect = value
+
+	# Métodos
+	def update(self, screen) -> None: # Atualiza
+		screen.blit(self.text, self.rect)
+
+	def check_for_input(self, position) -> bool: # Verifica se o usuário pressionou o botão
 		return self.rect.collidepoint(position)
 
-	def changeColor(self, position):
+	def change_color(self, position) -> None: # Efeito de "Hover"
 		if self.rect.collidepoint(position):
 			self.text = self.font.render(self.text_input, True, self.hovering_color)
 		else:

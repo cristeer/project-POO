@@ -1,25 +1,82 @@
 import pygame
 from laser import Laser
 from random import choice
-import os
 
 class Alien(pygame.sprite.Sprite):
     def __init__(self, offset: int, alien_type: int = 1, x: int = None, y: int = 0):
         super().__init__()
-      
-        self.alien_type = alien_type
-        self.offset = offset
-        self.aliens_direction = 1
         
+        self.__alien_type = alien_type
+        self.__offset = offset
+        self.__aliens_direction = 1
+
         # Sprites
-        self.aliens_group = pygame.sprite.Group()
-        self.aliens_lasers_group = pygame.sprite.Group()
+        self.__aliens_group = pygame.sprite.Group()
+        self.__aliens_lasers_group = pygame.sprite.Group()
         
         # Carregar imagem do alien baseado no tipo
-        self.image = pygame.image.load(f'images/aliens/alien_{self.alien_type}.png')
-        self.rect = self.image.get_rect(topleft=(x or 0, y))
-    
-    def create_aliens(self, offset: int) -> None:
+        self.__image = pygame.image.load(f'images/aliens/alien_{self.alien_type}.png')
+        self.__rect = self.image.get_rect(topleft = (x or 0, y))
+
+    # Setters e Getters
+    @property
+    def alien_type(self):
+        return self.__alien_type
+
+    @alien_type.setter
+    def alien_type(self, value):
+        self.__alien_type = value
+
+    @property
+    def offset(self):
+        return self.__offset
+
+    @offset.setter
+    def offset(self, value):
+        self.__offset = value
+
+    @property
+    def aliens_direction(self):
+        return self.__aliens_direction
+
+    @aliens_direction.setter
+    def aliens_direction(self, value):
+        self.__aliens_direction = value
+
+    @property
+    def aliens_group(self):
+        return self.__aliens_group
+
+    @aliens_group.setter
+    def aliens_group(self, value):
+        self.__aliens_group = value
+
+    @property
+    def aliens_lasers_group(self):
+        return self.__aliens_lasers_group
+
+    @aliens_lasers_group.setter
+    def aliens_lasers_group(self, value):
+        self.__aliens_lasers_group = value
+
+    @property
+    def image(self):
+        return self.__image
+
+    @image.setter
+    def image(self, value):
+        self.__image = value
+
+    @property
+    def rect(self):
+        return self.__rect
+
+    @rect.setter
+    def rect(self, value):
+        self.__rect = value
+
+    # Métodos
+    def create_aliens(self, offset: int) -> None: # Inicia os Aliens
         self.aliens_group.empty()
         for row in range(7):
             for col in range(11):
@@ -36,23 +93,23 @@ class Alien(pygame.sprite.Sprite):
                 alien_inst = Alien(offset, alien_type, (x + offset/2), y)
                 self.aliens_group.add(alien_inst)
 
-    def move_aliens(self, offset: int) -> None:
+    def move_aliens(self, offset: int) -> None: # Move-os lateralmente
         for alien in self.aliens_group:
             if alien.rect.right >= (1415 - offset):
                 self.aliens_direction = -1
-                self._move_aliens_down_(2)
+                self.__move_aliens_down_(2)
                 break
             elif alien.rect.left <= (485 + offset):
                 self.aliens_direction = 1
-                self._move_aliens_down_(2)
+                self.__move_aliens_down_(2)
                 break
     
-    def _move_aliens_down_(self, distance: int) -> None:
+    def __move_aliens_down_(self, distance: int) -> None: # Método privado que move para baixo
         if self.aliens_group:
             for alien in self.aliens_group:
                 alien.rect.y += distance
 
-    def aliens_shoot(self, screen_height: int) -> None:
+    def aliens_shoot(self, screen_height: int) -> None: # Aliens disparam lasers
         if self.aliens_group:
             rand_alien = choice(self.aliens_group.sprites())
             laser_sprite = Laser(rand_alien.rect.center, -6, screen_height)
@@ -60,3 +117,8 @@ class Alien(pygame.sprite.Sprite):
 
     def update(self, direction: int) -> None:
         self.rect.x += direction
+
+    def destroy_aliens(self) -> None: # Destrutor
+        self.aliens_group.empty()
+        self.aliens_lasers_group.empty()
+        self.aliens_direction = 1

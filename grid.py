@@ -1,8 +1,18 @@
 class Grid:
     def __init__(self):
-        self.grid = []
+        self.__grid = []
 
-    def create_grid(self):
+    # Setters e Getters
+    @property
+    def grid(self):
+        return self.__grid
+
+    @grid.setter
+    def grid(self,value):
+        self.__grid = value
+
+    # Métodos
+    def create_grid(self) -> None: # Retorna a matriz
         self.grid = [
             [0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0],
             [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
@@ -18,3 +28,4 @@ class Grid:
             [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
             [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1]
         ]
+        return self

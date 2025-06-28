@@ -1,6 +1,5 @@
 import pygame, json, sys, os
 from random import randint
-
 from spaceship import Spaceship
 from obstacle import Obstacle
 from alien import Alien

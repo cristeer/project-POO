@@ -307,7 +307,6 @@ class Game:
                     if self.spaceship.player_lives > 1:
                         self.sound.damage_alarm.play()
                     self.spaceship - 1
-                    self.sound.damage_alarm.play()
                 if self.spaceship == 0:
                     self.sound.explosion_sound.play()
                     self.game_over()

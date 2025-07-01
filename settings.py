@@ -14,7 +14,7 @@ class Settings:
         # Botões
         self.__game_volume_up = Button(
             pos = (960, 400),
-            text_input = 'Game Volume +',
+            text_input = 'Volume do Jogo +',
             text_font = self.fonts.button_font,
             base_color = "White",
             hovering_color = "#b68f40"
@@ -22,7 +22,7 @@ class Settings:
         
         self.__game_volume_down = Button(
             pos = (960, 500),
-            text_input = 'Game Volume -',
+            text_input = 'Volume do Jogo -',
             text_font = self.fonts.button_font,
             base_color = "White",
             hovering_color = "#b68f40"
@@ -30,7 +30,7 @@ class Settings:
 
         self.__music_volume_up = Button(
             pos = (960, 700),
-            text_input = 'Music Volume +',
+            text_input = 'Volume da Musica +',
             text_font = self.fonts.button_font,
             base_color = "White",
             hovering_color = "#b68f40"
@@ -38,15 +38,15 @@ class Settings:
 
         self.__music_volume_down = Button(
             pos = (960, 800),
-            text_input='Music Volume -',
-            text_font=self.fonts.button_font,
-            base_color="White",
-            hovering_color="#b68f40"
+            text_input = 'Volume da Musica -',
+            text_font = self.fonts.button_font,
+            base_color = "White",
+            hovering_color = "#b68f40"
         )
         
         self.__back_button = Button(
             pos = (960, 950),
-            text_input = 'Back',
+            text_input = 'Voltar',
             text_font = self.fonts.button_font,
             base_color = "White",
             hovering_color = "#b68f40"
@@ -143,8 +143,8 @@ class Settings:
         self.screen.blit(self.display.surfaces.settings_title, self.display.surfaces.settings_title_rect)
         
         # Níveis de Volume
-        self.game_vol_text = self.fonts.button_font.render(f"Game Volume: {int(self.sound.game_volume * 100)}%", True, self.display.YELLOW)
-        self.music_vol_text = self.fonts.button_font.render(f"Music Volume: {int(self.sound.music_volume * 100)}%", True, self.display.YELLOW)
+        self.game_vol_text = self.fonts.button_font.render(f"Volume do Jogo: {int(self.sound.game_volume * 100)}%", True, self.display.YELLOW)
+        self.music_vol_text = self.fonts.button_font.render(f"Volume da Musica: {int(self.sound.music_volume * 100)}%", True, self.display.YELLOW)
         self.screen.blit(self.game_vol_text, self.game_vol_text.get_rect(center = (960, 300)))
         self.screen.blit(self.music_vol_text, self.music_vol_text.get_rect(center = (960, 600)))
         

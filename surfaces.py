@@ -34,11 +34,11 @@ class Surfaces:
         self.__game_bg = pygame.transform.smoothscale(self.game_bg, (950, 1060))
 
         # Entrada de Nome
-        self.__enter_name = self.fonts.button_font.render("Enter Your Name", True, self.display.YELLOW)
+        self.__enter_name = self.fonts.button_font.render("Digite seu nome e use ENTER", True, self.display.YELLOW)
         self.__enter_name_rect = self.enter_name.get_rect(center = (960, 300))
 
         # Settings
-        self.__settings_title = self.fonts.title_font.render("SETTINGS", True, self.display.YELLOW)
+        self.__settings_title = self.fonts.title_font.render("AJUSTES", True, self.display.YELLOW)
         self.__settings_title_rect = self.settings_title.get_rect(center = (960, 200))
 
     # Getters e Setters

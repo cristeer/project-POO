@@ -39,7 +39,7 @@ class Display:
 
         self.__settings_button = Button(
             pos = (960, 640),
-            text_input = 'Settings',
+            text_input = 'Ajustes',
             text_font = self.fonts.button_font,
             base_color = "White", 
             hovering_color = "#b68f40"
@@ -55,7 +55,7 @@ class Display:
 
         self.__quit_button = Button(
             pos = (960, 940),
-            text_input = 'Quit',
+            text_input = 'Sair',
             text_font = self.fonts.button_font,
             base_color = "White",
             hovering_color = "#b68f40"
@@ -70,14 +70,14 @@ class Display:
         )
         self.__back_button_pause = Button(
             pos=(960, 640),
-            text_input='Back to Menu',
+            text_input='Voltar',
             text_font=self.fonts.button_font,
             base_color="White",
             hovering_color="#b68f40"
         )
         self.__back_button_ranking = Button(
             pos=(960, 1000),
-            text_input='Back to Menu',
+            text_input='Voltar',
             text_font=self.fonts.button_font,
             base_color="White",
             hovering_color="#b68f40"
@@ -249,7 +249,7 @@ class Display:
         else:
             self.play_button = Button(
                 pos = (960, 490),
-                text_input = 'Play',
+                text_input = 'Jogar',
                 text_font = self.fonts.button_font,
                 base_color = "White",
                 hovering_color = "#b68f40"
